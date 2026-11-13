@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Opération Noël au LB Shop · 1re MCV A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vert:#0f3d2e; --vert2:#1d5c45; --rouge:#b3262e; --rouge2:#d9434b; --or:#d4a63a; --or2:#f3d27a;
+  --creme:#fbf6ec; --papier:#ffffff; --encre:#1f2421; --gris:#6b7069; --ligne:#e4dccb; --doux:#f4ecdc;
+  --ok:#2f7d4f; --warn:#c07a12;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--encre);background:var(--creme);font-size:15.5px;line-height:1.5}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.15;margin:0 0 .4em}
+h2{font-size:1.55rem;color:var(--vert)}
+h3{font-size:1.15rem;color:var(--vert)}
+a{color:var(--rouge)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+
+/* En-tête */
+header.top{background:var(--vert);color:#fff;position:relative;overflow:hidden}
+header.top .wrap{padding:26px 18px 18px;display:flex;gap:20px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap}
+header.top h1{font-size:2.2rem;color:#fff}
+header.top .sous{opacity:.85;font-size:.95rem}
+.compteur{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:8px 16px;font-weight:600;white-space:nowrap}
+.compteur b{color:var(--or2)}
+.neige{position:absolute;inset:0;pointer-events:none;opacity:.35;background-image:radial-gradient(#fff 1px,transparent 1.5px),radial-gradient(#fff 1px,transparent 1.5px);background-size:46px 46px,73px 73px;background-position:0 0,20px 30px}
+
+/* Barre d'identité / sauvegarde */
+.idbar{position:relative;z-index:20;background:var(--papier);border-bottom:2px solid var(--ligne);box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.idbar .wrap{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:10px 18px}
+.idbar label{font-size:.8rem;color:var(--gris);font-weight:600;display:flex;align-items:center;gap:6px}
+.idbar select,.idbar input{font:inherit;font-size:.9rem;padding:6px 8px;border:1px solid var(--ligne);border-radius:8px;background:#fff}
+.idbar input{width:120px}
+.idbar .btns{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.etat-save{font-size:.8rem;color:var(--ok);width:100%;margin-top:-2px}
+.etat-save.err{color:var(--rouge)}
+
+/* Onglets */
+nav.tabs{background:var(--doux);border-bottom:1px solid var(--ligne)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto}
+nav.tabs button{font:inherit;font-weight:600;border:0;background:none;padding:12px 14px;color:var(--gris);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs button.on{color:var(--vert);border-bottom-color:var(--rouge)}
+main{padding:24px 0 60px}
+.vue{display:none}.vue.on{display:block}
+
+/* Boutons */
+.btn{font:inherit;font-weight:600;font-size:.88rem;border-radius:9px;padding:8px 13px;border:1px solid var(--vert);background:var(--vert);color:#fff;cursor:pointer}
+.btn:hover{background:var(--vert2)}
+.btn.sec{background:#fff;color:var(--vert)}
+.btn.sec:hover{background:var(--doux)}
+.btn.rouge{background:var(--rouge);border-color:var(--rouge)}
+.btn.rouge:hover{background:var(--rouge2)}
+.btn.petit{padding:5px 10px;font-size:.8rem}
+
+/* Cartes */
+.carte{background:var(--papier);border:1px solid var(--ligne);border-radius:14px;padding:20px;margin-bottom:18px}
+.grille2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grille4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:820px){.grille2,.grille4{grid-template-columns:1fr}}
+.note{background:#fffdf6;border:1px solid var(--ligne);border-left:5px solid var(--rouge);border-radius:10px;padding:20px 22px;font-size:1rem}
+.note .entete{font-size:.82rem;color:var(--gris);border-bottom:1px dashed var(--ligne);padding-bottom:8px;margin-bottom:12px}
+.pastille{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--doux);color:var(--vert)}
+.pastille.r{background:#fbe6e7;color:var(--rouge)}
+.pastille.o{background:#fbf0d4;color:#8a6410}
+.encadre{background:var(--doux);border-radius:10px;padding:12px 14px;margin:12px 0;font-size:.93rem}
+.encadre.attention{background:#fbe6e7}
+.petit-txt{font-size:.85rem;color:var(--gris)}
+
+/* Façade / sapin */
+.facade{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.facade svg{width:230px;height:auto;flex:none}
+.legende{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--gris);margin-top:10px}
+.legende span::before{content:"";display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px;background:var(--c)}
+.boule{transition:fill .5s, filter .5s}
+.boule.on{filter:drop-shadow(0 0 6px #ffd76a)}
+
+/* Missions */
+.mcards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+@media (max-width:820px){.mcards{grid-template-columns:1fr 1fr}}
+.mcard{background:#fff;border:2px solid var(--ligne);border-radius:12px;padding:12px;cursor:pointer;text-align:left;font:inherit}
+.mcard:hover{border-color:var(--or)}
+.mcard.on{border-color:var(--vert);box-shadow:0 0 0 3px rgba(15,61,46,.12)}
+.mcard .num{font-family:Fraunces,serif;font-size:1.5rem;font-weight:800;color:var(--rouge)}
+.mcard .t{font-weight:700;font-size:.92rem;line-height:1.25}
+.mcard .s{font-size:.75rem;margin-top:6px}
+.mission{display:none}.mission.on{display:block}
+.mhead{background:var(--vert);color:#fff;border-radius:14px;padding:20px 22px;margin-bottom:18px}
+.mhead h2{color:#fff;font-size:1.7rem}
+.mhead .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.mhead .meta span{background:rgba(255,255,255,.14);border-radius:999px;padding:3px 11px;font-size:.8rem}
+.etapes{counter-reset:e;list-style:none;padding:0;margin:0}
+.etapes li{counter-increment:e;display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--ligne)}
+.etapes li:last-child{border:0}
+.etapes li::before{content:counter(e);flex:none;width:26px;height:26px;border-radius:50%;background:var(--rouge);color:#fff;font-weight:700;font-size:.85rem;display:grid;place-items:center}
+.etapes li label{display:flex;gap:8px;align-items:flex-start;flex:1;cursor:pointer}
+.etapes input[type=checkbox]{margin-top:4px;width:17px;height:17px;accent-color:var(--vert)}
+.section-t{display:flex;align-items:center;gap:10px;margin:26px 0 10px}
+.section-t .n{background:var(--or);color:var(--vert);font-weight:800;border-radius:7px;padding:2px 9px;font-size:.85rem}
+
+/* Champs */
+.champ{margin:10px 0}
+.champ>label,.lbl{display:block;font-weight:600;font-size:.88rem;margin-bottom:4px}
+input[type=text],input[type=number],input[type=time],textarea,select.f{font:inherit;font-size:.93rem;width:100%;padding:8px 10px;border:1px solid #d6ccb6;border-radius:8px;background:#fffefb}
+textarea{min-height:76px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--or);border-color:var(--or)}
+table{width:100%;border-collapse:collapse;font-size:.88rem;background:#fff}
+th,td{border:1px solid var(--ligne);padding:6px 7px;text-align:left;vertical-align:top}
+th{background:var(--doux);font-size:.78rem;text-transform:uppercase;letter-spacing:.02em;color:var(--vert)}
+td input[type=text],td input[type=number],td select.f{padding:5px 6px;font-size:.86rem;min-width:60px}
+td.num,th.num{text-align:right}
+.tabwrap{overflow-x:auto;margin:8px 0}
+.calc{font-weight:700;text-align:center}
+.calc.neg{color:var(--rouge)}.calc.pos{color:var(--warn)}.calc.zero{color:var(--ok)}
+.doc{border:1px solid #cfc5ae;border-radius:6px;background:#fff;padding:14px;font-size:.86rem}
+.doc .dhead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:2px solid var(--encre);padding-bottom:8px;margin-bottom:8px}
+.doc .dtitre{font-family:Fraunces,serif;font-weight:800;font-size:1.1rem;letter-spacing:.04em}
+.coche{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px}
+@media (max-width:700px){.coche{grid-template-columns:1fr}}
+.coche label{display:flex;gap:8px;align-items:flex-start;font-size:.92rem;cursor:pointer}
+.coche input{margin-top:4px;accent-color:var(--vert);width:16px;height:16px}
+
+/* Photos */
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:700px){.photos{grid-template-columns:1fr}}
+.photo{border:2px dashed #cfc5ae;border-radius:10px;padding:10px;text-align:center;background:#fffefb}
+.photo img{max-width:100%;max-height:260px;border-radius:6px;display:block;margin:8px auto}
+.photo .vide{color:var(--gris);font-size:.85rem;padding:30px 0}
+
+/* Cartes clients */
+.clients{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (max-width:700px){.clients{grid-template-columns:1fr}}
+.client{border:2px solid var(--ligne);border-radius:12px;padding:14px;background:#fff;position:relative}
+.client.tiree{border-color:var(--rouge);box-shadow:0 0 0 3px rgba(179,38,46,.12)}
+.client h4{margin:0 0 6px;font-family:Fraunces,serif;color:var(--rouge);font-size:1.05rem}
+.client .sec{font-size:.82rem;background:#fbf0d4;border-radius:7px;padding:6px 8px;margin-top:8px}
+
+/* Rendu */
+.rendu{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:var(--doux);border-radius:12px;padding:14px 16px;margin-top:26px}
+.rendu .statut{font-weight:700}
+.smileys{display:flex;gap:6px}
+.smileys label{border:1px solid var(--ligne);border-radius:8px;padding:4px 9px;background:#fff;cursor:pointer;font-size:.85rem}
+.smileys input{accent-color:var(--vert)}
+
+/* Planning */
+.planning td,.planning th{text-align:center}
+.planning td:first-child,.planning th:first-child{text-align:left}
+.m1{background:#e6f1ec}.m2{background:#fbe6e7}.m3{background:#fbf0d4}.m4{background:#e8ecf6}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--vert);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;font-size:.9rem;transition:transform .3s;z-index:50;max-width:92vw;text-align:center}
+.toast.on{transform:translateX(-50%) translateY(0)}
+details{margin:10px 0}
+summary{cursor:pointer;font-weight:600;color:var(--vert)}
+#rapport{display:none}
+
+/* =================== HABILLAGE FÉERIQUE =================== */
+:root{--nuit:#06231a;--nuit2:#0c3a2b;--velours:#8e1622;--velours2:#c22a35;--or:#d9b04c;--or2:#ffe39a;--orsombre:#a8812a}
+body{
+  background-color:#f8f1e1;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='none' stroke='%23d9b04c' stroke-opacity='.22' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M30 18v24M18 30h24M21.5 21.5l17 17M38.5 21.5l-17 17M30 18l-3 3M30 18l3 3M30 42l-3-3M30 42l3-3'/%3E%3Cpath d='M90 78v16M82 86h16M84.3 80.3l11.4 11.4M95.7 80.3L84.3 91.7'/%3E%3C/g%3E%3Ccircle cx='86' cy='26' r='1.6' fill='%23c22a35' fill-opacity='.25'/%3E%3Ccircle cx='24' cy='92' r='1.6' fill='%230c3a2b' fill-opacity='.2'/%3E%3C/svg%3E");
+}
+h1,.titre-fee{font-family:"Mountains of Christmas",Fraunces,serif;font-weight:700;letter-spacing:.01em}
+h2,h3{color:var(--nuit2)}
+
+/* --- Ciel de Noël (en-tête) --- */
+header.top{background:radial-gradient(120% 140% at 50% 0%,#14513b 0%,var(--nuit2) 45%,var(--nuit) 100%);min-height:300px;border-bottom:0}
+header.top .neige{display:none}
+.ciel{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.flocon{position:absolute;top:-12px;color:#fff;opacity:.85;animation:tombe linear infinite;text-shadow:0 0 6px rgba(255,255,255,.7)}
+@keyframes tombe{to{transform:translateY(340px) translateX(30px) rotate(200deg)}}
+.etoiles{position:absolute;inset:0;background-image:radial-gradient(1.4px 1.4px at 12% 18%,#fff8 50%,transparent 51%),radial-gradient(1.2px 1.2px at 32% 9%,#fff9 50%,transparent 51%),radial-gradient(1.6px 1.6px at 58% 22%,#ffe39acc 50%,transparent 51%),radial-gradient(1.2px 1.2px at 74% 8%,#fff9 50%,transparent 51%),radial-gradient(1.4px 1.4px at 88% 28%,#fff8 50%,transparent 51%),radial-gradient(1.1px 1.1px at 44% 34%,#fff7 50%,transparent 51%);animation:scintille 4s ease-in-out infinite alternate}
+@keyframes scintille{from{opacity:.55}to{opacity:1}}
+.lune{position:absolute;right:7%;top:26px;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffbe8,#f3dd9a 70%);box-shadow:0 0 40px 12px rgba(255,227,154,.25)}
+.traineau{position:absolute;top:58px;left:-320px;width:300px;animation:vole 28s linear infinite;filter:drop-shadow(0 0 6px rgba(255,227,154,.55))}
+@keyframes vole{0%{transform:translateX(0) translateY(0)}50%{transform:translateX(calc(50vw + 160px)) translateY(-18px)}100%{transform:translateX(calc(100vw + 340px)) translateY(6px)}}
+.paysage{position:absolute;left:0;right:0;bottom:-1px;height:110px;width:100%}
+header.top .wrap{position:relative;z-index:2;padding:34px 18px 120px;align-items:center}
+header.top h1{font-size:3.4rem;color:var(--or2);text-shadow:0 2px 0 #7a5a12,0 0 22px rgba(255,214,110,.55)}
+header.top .sous{color:#f4ead2}
+.compteur{background:linear-gradient(180deg,var(--velours2),var(--velours));border:2px solid var(--or);box-shadow:0 0 0 3px rgba(217,176,76,.25),0 6px 18px rgba(0,0,0,.35);font-size:1rem}
+.compteur b{color:var(--or2);font-size:1.25rem}
+.couronne-entete{width:118px;height:118px;flex:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45))}
+
+/* --- Guirlande lumineuse --- */
+.guirlande{position:relative;height:38px;overflow:hidden;background:transparent;pointer-events:none}
+.guirlande .fil{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='38'%3E%3Cpath d='M0 6 Q40 26 80 6' fill='none' stroke='%231b2a22' stroke-width='2.2'/%3E%3C/svg%3E");background-repeat:repeat-x}
+.ampoule{position:absolute;top:13px;width:11px;height:17px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;background:var(--c);box-shadow:0 0 10px 3px var(--c);animation:clignote 1.6s ease-in-out infinite alternate}
+.ampoule::before{content:"";position:absolute;top:-4px;left:2.5px;width:6px;height:5px;background:#3c463f;border-radius:1px}
+@keyframes clignote{0%{opacity:1;filter:brightness(1.15)}100%{opacity:.35;filter:brightness(.7);box-shadow:0 0 2px 0 var(--c)}}
+.guirlande.haut{position:absolute;left:0;right:0;top:0;z-index:3}
+.guirlande.bas{margin-top:-6px}
+
+/* --- Barre d'identité & onglets --- */
+.idbar{background:#fffaf0;border-bottom:0;box-shadow:none}
+.idbar::after{content:"";display:block;height:8px;background:repeating-linear-gradient(-45deg,var(--velours2) 0 12px,#fff 12px 24px);opacity:.9}
+nav.tabs{background:linear-gradient(180deg,var(--nuit2),var(--nuit));border-bottom:3px solid var(--or)}
+nav.tabs button{color:#e8dcc0}
+nav.tabs button:hover{color:var(--or2)}
+nav.tabs button.on{color:var(--or2);border-bottom-color:var(--or2);text-shadow:0 0 10px rgba(255,227,154,.6)}
+
+/* --- Boutons --- */
+.btn{background:linear-gradient(180deg,#17553f,var(--nuit2));border:1.5px solid var(--or);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 2px 6px rgba(0,0,0,.15)}
+.btn:hover{background:linear-gradient(180deg,#1d6a4f,#104a37)}
+.btn.sec{background:#fffdf7;color:var(--nuit2);border-color:var(--or)}
+.btn.sec:hover{background:#fff4d6}
+.btn.rouge{background:linear-gradient(180deg,var(--velours2),var(--velours));border-color:var(--or)}
+.btn.rouge:hover{background:linear-gradient(180deg,#d6343f,#a01b27)}
+
+/* --- Cartes avec houx --- */
+.carte{position:relative;border:1.5px solid var(--or);box-shadow:0 0 0 4px #fffaf0,0 0 0 5px rgba(217,176,76,.45),0 10px 24px rgba(12,58,43,.08);border-radius:16px}
+.carte::after{content:"";position:absolute;top:-16px;right:-12px;width:62px;height:50px;pointer-events:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 62 50'%3E%3Cpath d='M30 26 C22 10 8 14 2 8 C8 18 4 24 12 30 C16 26 22 30 30 26Z' fill='%23176b47' stroke='%230c3a2b' stroke-width='1'/%3E%3Cpath d='M32 26 C42 12 54 16 60 10 C54 20 58 26 50 32 C46 28 40 32 32 26Z' fill='%231f8656' stroke='%230c3a2b' stroke-width='1'/%3E%3Ccircle cx='28' cy='30' r='5' fill='%23d22a36'/%3E%3Ccircle cx='36' cy='31' r='5' fill='%23c22a35'/%3E%3Ccircle cx='32' cy='37' r='5' fill='%23e03a45'/%3E%3Ccircle cx='26.5' cy='28.5' r='1.5' fill='%23fff' fill-opacity='.7'/%3E%3Ccircle cx='34.5' cy='29.5' r='1.5' fill='%23fff' fill-opacity='.7'/%3E%3C/svg%3E") no-repeat center/contain}
+.carte.encadre.attention::after{display:none}
+.note{align-self:start;position:relative;background:linear-gradient(180deg,#fffdf6,#fff8e8);border:1.5px solid var(--or);border-left:0;border-radius:16px;padding:26px 26px 22px 34px;box-shadow:0 10px 24px rgba(12,58,43,.08)}
+.note::before{content:"";position:absolute;left:0;top:0;bottom:0;width:14px;border-radius:16px 0 0 16px;background:repeating-linear-gradient(180deg,var(--velours2) 0 14px,#fff 14px 28px)}
+.note .cachet{position:absolute;right:16px;bottom:14px;width:74px;height:74px;opacity:.95}
+.note .entete{border-bottom:1px dashed var(--or)}
+
+/* --- Sapin de progression --- */
+.facade svg{width:260px}
+.boule.on{filter:drop-shadow(0 0 8px #ffd76a) drop-shadow(0 0 3px #fff)}
+#etoile.on{filter:drop-shadow(0 0 12px #ffe39a);animation:brille 1.6s ease-in-out infinite alternate}
+@keyframes brille{from{transform:scale(1)}to{transform:scale(1.08)}}
+#etoile{transform-origin:100px 32px;transform-box:view-box}
+.lum-sapin{animation:clignote 1.3s ease-in-out infinite alternate}
+
+/* --- Cartes mission & en-têtes de mission --- */
+.mcard{border:1.5px solid var(--or);background:linear-gradient(180deg,#fffdf7,#fff6e2);position:relative;overflow:hidden}
+.mcard::before{content:"";position:absolute;right:-18px;top:-18px;width:54px;height:54px;border-radius:50%;border:6px solid #1f8656;border-color:#1f8656 #176b47;opacity:.35}
+.mcard.on{border-color:var(--velours2);box-shadow:0 0 0 3px rgba(194,42,53,.18),0 0 18px rgba(217,176,76,.35)}
+.mcard .num{font-family:"Mountains of Christmas",serif;font-size:1.9rem;color:var(--velours2)}
+.mhead{position:relative;overflow:hidden;background:radial-gradient(130% 160% at 0% 0%,var(--velours2),var(--velours) 55%,#5e0d16);border:2px solid var(--or);box-shadow:0 0 0 4px #fffaf0,0 0 0 5px var(--or),0 12px 28px rgba(94,13,22,.25);border-radius:18px;padding:26px 150px 22px 26px}
+.mhead h2{font-family:"Mountains of Christmas",Fraunces,serif;font-size:2.3rem;color:var(--or2);text-shadow:0 2px 0 #4a0910,0 0 14px rgba(255,214,110,.45)}
+.mhead .pastille.o{background:var(--or);color:#4a0910}
+.mhead .meta span{background:rgba(0,0,0,.22);border:1px solid rgba(255,227,154,.45)}
+.mhead .couronne{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:120px;height:120px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+@media (max-width:700px){.mhead{padding-right:22px}.mhead .couronne{display:none}header.top h1{font-size:2.5rem}.couronne-entete{display:none}}
+.etapes li::before{background:radial-gradient(circle at 35% 30%,#e8505a,var(--velours));box-shadow:0 0 0 2px var(--or)}
+.section-t .n{background:linear-gradient(180deg,var(--or2),var(--or));color:#4a0910;box-shadow:0 0 0 1.5px var(--orsombre)}
+.section-t h3{font-family:Fraunces,serif}
+.encadre{background:#fff6dc;border:1px solid rgba(217,176,76,.6)}
+.encadre.attention{background:#fde9ea;border-color:#e7a6ab}
+th{background:linear-gradient(180deg,#fff2cf,#fbe7b5);color:#5a3f08}
+.doc{border:1.5px solid var(--or);box-shadow:3px 3px 0 rgba(217,176,76,.35)}
+.client{border:1.5px solid var(--or);background:linear-gradient(180deg,#fff,#fff8e8)}
+.client h4{font-family:"Mountains of Christmas",serif;font-size:1.35rem}
+.client.tiree{border-color:var(--velours2);box-shadow:0 0 0 3px rgba(194,42,53,.2),0 0 20px rgba(217,176,76,.5)}
+.rendu{background:linear-gradient(90deg,#fff6dc,#fdeccc);border:1.5px solid var(--or)}
+.photo{border-color:var(--or)}
+.pastille{background:#e3efe8;color:var(--nuit2)}
+.pastille.r{background:var(--velours2);color:#fff}
+.pastille.o{background:#fbe7b5;color:#6b4a09}
+.toast{background:linear-gradient(180deg,var(--velours2),var(--velours));border:1.5px solid var(--or);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+
+/* --- Pied de page --- */
+.pied{position:relative;height:150px;margin-top:10px;background:linear-gradient(180deg,transparent,#e9f1ec 60%)}
+.pied svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:150px}
+
+@media (prefers-reduced-motion:reduce){
+  .flocon,.traineau,.ampoule,.lum-sapin,#etoile.on,.etoiles{animation:none!important}
+  .traineau{left:auto;right:18%}
+}
+@media print{.pied,.guirlande,.ciel,.carte::after{display:none!important}}
+
+/* Impression */
+@media print{
+  body{background:#fff;font-size:11pt}
+  header.top,.idbar,nav.tabs,main,.toast{display:none!important}
+  #rapport{display:block}
+  #rapport .rp-mission{page-break-before:always}
+  #rapport .rp-mission:first-of-type{page-break-before:auto}
+  #rapport .val{border-bottom:1px dotted #999;display:inline-block;min-width:40px;white-space:pre-wrap}
+  #rapport .bloc{border:1px solid #ccc;padding:6px;white-space:pre-wrap;min-height:20px;margin:3px 0}
+  #rapport img{max-width:48%;max-height:220px}
+  table{font-size:9pt}
+  .no-print{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- Sprites décoratifs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="renne" viewBox="0 0 100 80">
+      <ellipse cx="44" cy="44" rx="25" ry="11"/>
+      <path d="M60 40 L70 20 Q74 14 80 16 L84 19 Q86 22 82 24 L76 25 L70 44 Z"/>
+      <circle cx="79" cy="19" r="1.4" fill="#06231a"/>
+      <circle cx="86" cy="21" r="2.6" fill="#e03a45"/>
+      <g stroke-width="4" stroke-linecap="round" fill="none" stroke="currentColor">
+        <path d="M28 50 L22 62 L26 74"/><path d="M36 53 L36 75"/><path d="M56 51 L62 62 L58 73"/><path d="M63 48 L72 60 L70 71"/>
+      </g>
+      <g stroke-width="2.4" stroke-linecap="round" fill="none" stroke="currentColor">
+        <path d="M76 15 L70 3"/><path d="M73 9 L66 7"/><path d="M71 5 L74 0"/>
+        <path d="M80 14 L82 2"/><path d="M81 7 L87 4"/><path d="M82 3 L80 -1"/>
+      </g>
+      <path d="M19 40 Q14 36 17 32 Q20 38 22 38 Z"/>
+    </symbol>
+    <symbol id="sapin" viewBox="0 0 60 90">
+      <path d="M30 2 L46 30 L38 30 L54 56 L44 56 L58 80 L2 80 L16 56 L6 56 L22 30 L14 30 Z"/>
+      <rect x="26" y="80" width="8" height="10" fill="#5a3a22"/>
+    </symbol>
+    <symbol id="traineau" viewBox="0 0 120 60">
+      <path d="M10 22 L54 22 Q60 22 60 30 L60 38 L14 38 Q8 38 8 30 Z"/>
+      <path d="M2 46 L66 46 Q76 46 78 38" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <path d="M16 38 L14 46 M52 38 L54 46" stroke="currentColor" stroke-width="3"/>
+      <rect x="22" y="8" width="14" height="14" rx="2" fill="#c22a35"/><rect x="36" y="12" width="12" height="10" rx="2" fill="#1f8656"/>
+      <path d="M29 8 L29 22 M22 15 L36 15" stroke="#ffe39a" stroke-width="2"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="ciel">
+    <div class="etoiles"></div>
+    <div class="lune"></div>
+    <svg class="traineau" viewBox="0 0 520 90" style="color:#ffe39a;fill:#ffe39a">
+      <path d="M118 52 Q190 30 262 40 Q330 28 404 36" fill="none" stroke="#ffe39a" stroke-width="1.4" stroke-opacity=".8"/>
+      <use href="#traineau" x="0" y="20" width="130" height="65"/>
+      <use href="#renne" x="250" y="8" width="80" height="64"/>
+      <use href="#renne" x="372" y="4" width="80" height="64"/>
+    </svg>
+    <div id="neige-zone"></div>
+    <svg class="paysage" viewBox="0 0 1200 110" preserveAspectRatio="none">
+      <path d="M0 60 Q150 20 320 55 T640 50 T960 45 T1200 55 L1200 110 L0 110 Z" fill="#0f4a36" opacity=".9"/>
+      <path d="M0 80 Q200 55 420 78 T820 72 T1200 74 L1200 110 L0 110 Z" fill="#f6f2e8"/>
+    </svg>
+    <svg style="position:absolute;bottom:22px;left:0;width:100%;height:100px" viewBox="0 0 1200 100" preserveAspectRatio="xMidYMax meet">
+      <g fill="#0b3226">
+        <use href="#sapin" x="20" y="10" width="60" height="90"/><use href="#sapin" x="70" y="35" width="40" height="60"/>
+        <use href="#sapin" x="160" y="25" width="50" height="75"/>
+        <use href="#sapin" x="980" y="20" width="56" height="84"/><use href="#sapin" x="1040" y="0" width="66" height="100"/><use href="#sapin" x="1110" y="34" width="42" height="63"/>
+      </g>
+      <g fill="#d9b04c" style="color:#d9b04c"><use href="#renne" x="860" y="44" width="70" height="56"/></g>
+      <g fill="#ffe39a"><circle cx="50" cy="40" r="2.5" class="lum-sapin"/><circle cx="62" cy="64" r="2.5" class="lum-sapin" style="animation-delay:.4s"/><circle cx="1074" cy="38" r="2.5" class="lum-sapin" style="animation-delay:.8s"/><circle cx="1060" cy="70" r="2.5" class="lum-sapin"/></g>
+    </svg>
+  </div>
+  <div class="guirlande haut"><div class="fil"></div></div>
+  <div class="wrap" style="position:relative">
+    <svg class="couronne-entete couronne-svg" viewBox="0 0 120 120"></svg>
+    <div style="flex:1;min-width:260px">
+      <div class="sous">LB Shop · magasin pédagogique · 1re Bac Pro MCV option A</div>
+      <h1>Opération Noël au LB Shop</h1>
+      <div class="sous">2 séances de 2 h · 4 missions · groupes A et B</div>
+    </div>
+    <div class="compteur"><b id="cpt">0</b> / 4 missions rendues</div>
+  </div>
+</header>
+
+<!-- Identification + sauvegarde -->
+<div class="idbar">
+  <div class="wrap">
+    <label>Groupe
+      <select id="id-g"><option value="A">A</option><option value="B">B</option></select>
+    </label>
+    <label>Équipe
+      <select id="id-e"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+    </label>
+    <label>Élèves
+      <input type="text" data-k="nom1" placeholder="Prénom NOM">
+      <input type="text" data-k="nom2" placeholder="Prénom NOM">
+      <input type="text" data-k="nom3" placeholder="Prénom NOM">
+    </label>
+    <div class="btns">
+      <button class="btn" id="b-dl" title="Télécharge un fichier .json à garder (ENT, clé USB, dossier de classe)">💾 Télécharger ma sauvegarde</button>
+      <button class="btn sec" id="b-ul">📂 Reprendre une sauvegarde</button>
+      <button class="btn sec" id="b-pr">🖨 Imprimer / PDF</button>
+      <input type="file" id="f-ul" accept=".json,application/json" hidden>
+    </div>
+    <div class="etat-save" id="etat-save">Le travail s'enregistre automatiquement sur cet appareil.</div>
+  </div>
+</div>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button data-v="shop" class="on">🎄 Le LB Shop</button>
+    <button data-v="mission">📋 Ma mission</button>
+    <button data-v="planning">🗓 Planning</button>
+    <button data-v="ref">📘 Référentiel</button>
+    <button data-v="prof">🔑 Espace professeur</button>
+  </div>
+</nav>
+<div class="guirlande bas"><div class="fil"></div></div>
+
+<main>
+<div class="wrap">
+
+<!-- ============ VUE : LE LB SHOP ============ -->
+<section class="vue on" id="v-shop">
+  <div class="grille2">
+    <div class="note">
+      <div class="entete"><b>NOTE DE SERVICE</b> — De : la responsable du LB Shop · À : l'équipe de conseillers de vente (1re MCV A) · Objet : Opération Noël</div>
+      <p>Bonjour à toutes et à tous,</p>
+      <p>Les fêtes de fin d'année sont <b>la période la plus importante de l'année</b> pour un magasin : c'est là que nous réalisons une grande partie de notre chiffre d'affaires. En novembre, les élèves de seconde ont remis la réserve en ordre et préparé le magasin. <b>C'est maintenant à vous, mes vendeurs confirmés, de faire entrer le LB Shop dans Noël.</b></p>
+      <p>Il reste beaucoup à faire :</p>
+      <ul>
+        <li>le fournisseur <b>Atelier Flocon</b> vient de livrer nos articles de Noël : personne n'a encore contrôlé la livraison ;</li>
+        <li>les clients arrivent avec des idées de cadeaux mais sans savoir quoi choisir : il faut des <b>vendeurs qui conseillent</b> ;</li>
+        <li>les rayons vêtements présentent <b>encore des articles d'été</b> (robes légères, shorts, sandales…) : c'est inacceptable en décembre ; et les rayons vaisselle et décoration doivent être réaménagés pour les fêtes ;</li>
+        <li>les premières <b>commandes cadeaux</b> attendent d'être préparées et emballées.</li>
+      </ul>
+      <p>Vous travaillez en équipe de 3. Chaque fois qu'une mission est rendue, une boule s'allume sur notre sapin. <b>Objectif : un sapin entièrement illuminé à la fin de la 2<sup>e</sup> séance.</b></p>
+      <p>Je compte sur votre professionnalisme. Joyeuses fêtes !</p>
+      <p style="text-align:right;margin-right:90px"><i>La responsable du LB Shop</i></p>
+      <svg class="cachet couronne-svg" viewBox="0 0 120 120"></svg>
+    </div>
+
+    <div>
+      <div class="carte">
+        <h3>Le sapin de votre équipe</h3>
+        <div class="facade">
+          <svg viewBox="0 0 200 250" aria-label="Sapin de progression">
+            <defs>
+              <linearGradient id="gSapin" x1="0" x2="1"><stop offset="0" stop-color="#0f4a36"/><stop offset=".5" stop-color="#1f8656"/><stop offset="1" stop-color="#0f4a36"/></linearGradient>
+              <radialGradient id="halo"><stop offset="0" stop-color="#ffe39a" stop-opacity=".55"/><stop offset="1" stop-color="#ffe39a" stop-opacity="0"/></radialGradient>
+            </defs>
+            <circle cx="100" cy="130" r="98" fill="url(#halo)"/>
+            <polygon points="100,40 150,105 125,105 170,165 135,165 180,215 20,215 65,165 30,165 75,105 50,105" fill="url(#gSapin)" stroke="#0b3226" stroke-width="2"/>
+            <path d="M68 100 Q100 116 136 96 M48 160 Q100 182 156 156 M36 208 Q100 228 168 204" fill="none" stroke="#d9b04c" stroke-width="2.4"/>
+            <g>
+              <circle cx="80" cy="106" r="3" fill="#ffe39a" class="lum-sapin"/><circle cx="118" cy="105" r="3" fill="#e03a45" class="lum-sapin" style="animation-delay:.5s"/>
+              <circle cx="64" cy="167" r="3" fill="#ffe39a" class="lum-sapin" style="animation-delay:.3s"/><circle cx="100" cy="172" r="3" fill="#8fe0b0" class="lum-sapin" style="animation-delay:.9s"/><circle cx="140" cy="166" r="3" fill="#e03a45" class="lum-sapin" style="animation-delay:.6s"/>
+              <circle cx="56" cy="214" r="3" fill="#e03a45" class="lum-sapin" style="animation-delay:.2s"/><circle cx="146" cy="214" r="3" fill="#ffe39a" class="lum-sapin" style="animation-delay:.7s"/>
+            </g>
+            <rect x="88" y="215" width="24" height="18" fill="#6b4226"/>
+            <g><rect x="40" y="222" width="34" height="24" rx="2" fill="#c22a35"/><rect x="54" y="222" width="6" height="24" fill="#ffe39a"/><path d="M57 222 q-10 -10 -12 0 q12 2 12 0 q10 -10 12 0 q-12 2 -12 0" fill="#ffe39a"/>
+               <rect x="120" y="226" width="40" height="20" rx="2" fill="#1f8656"/><rect x="137" y="226" width="6" height="20" fill="#d9b04c"/>
+               <rect x="96" y="232" width="22" height="14" rx="2" fill="#d9b04c"/><rect x="105" y="232" width="4" height="14" fill="#c22a35"/></g>
+            <polygon id="etoile" points="100,8 107,26 126,26 111,37 117,55 100,44 83,55 89,37 74,26 93,26" fill="#bdb6a6" stroke="#a8812a" stroke-width="1.5"/>
+            <circle class="boule" id="boule1" cx="92" cy="92" r="11" fill="#cfc8b8"/><text x="92" y="96.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">1</text>
+            <circle class="boule" id="boule2" cx="122" cy="140" r="11" fill="#cfc8b8"/><text x="122" y="144.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">2</text>
+            <circle class="boule" id="boule3" cx="72" cy="150" r="11" fill="#cfc8b8"/><text x="72" y="154.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">3</text>
+            <circle class="boule" id="boule4" cx="110" cy="192" r="11" fill="#cfc8b8"/><text x="110" y="196.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">4</text>
+          </svg>
+          <div>
+            <p style="margin-top:0"><b id="sapin-equipe">Groupe A · Équipe 1</b></p>
+            <ol id="sapin-liste" style="padding-left:18px;margin:0;font-size:.92rem"></ol>
+            <div class="legende">
+              <span style="--c:#cfc8b8">À faire</span>
+              <span style="--c:#d4a63a">En cours</span>
+              <span style="--c:#b3262e">Rendue</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="carte">
+        <h3>Votre poste</h3>
+        <p style="margin:0"><b>Conseiller(ère) de vente en renfort de fin d'année.</b> 2 séances de 2 h. À chaque séance, votre équipe réalise <b>2 missions de 50 min</b>.</p>
+        <h3 style="margin-top:14px">Les rôles (ils tournent à chaque mission)</h3>
+        <ul style="margin:0;padding-left:18px;font-size:.93rem">
+          <li><b>Chef d'équipe</b> : lit la mission à voix haute, répartit le travail, surveille le temps, clique sur « Rendre la mission ».</li>
+          <li><b>Rédacteur</b> : remplit la fiche numérique avec l'équipe.</li>
+          <li><b>Contrôleur qualité-photographe</b> : vérifie chaque étape, prend les photos (<b>jamais de visage</b>), contrôle la sécurité.</li>
+        </ul>
+        <p class="petit-txt" style="margin-bottom:0">Mission 2 (jeu de rôle) : les rôles deviennent vendeur, client et observateur.</p>
+      </div>
+      <div class="carte encadre attention" style="margin:0">
+        <b>💾 Ne perdez pas votre travail !</b><br>
+        Il s'enregistre tout seul sur cet ordinateur, mais à la fin de chaque séance, cliquez sur <b>« Télécharger ma sauvegarde »</b> et déposez le fichier là où le professeur l'indique. À la séance 2, choisissez votre groupe et votre équipe puis <b>« Reprendre une sauvegarde »</b> si vous n'êtes pas sur le même poste.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VUE : MA MISSION ============ -->
+<section class="vue" id="v-mission">
+  <div class="carte" style="padding:14px 18px">
+    <b>Votre parcours</b> — <span id="parcours"></span>
+  </div>
+  <div class="mcards" id="mcards"></div>
+
+  <!-- ===== MISSION 1 ===== -->
+  <article class="mission" id="m1">
+    <div class="mhead">
+      <div class="pastille o">Mission 1 · Pôle réserve</div>
+      <h2>Réception de la livraison de Noël & inventaire</h2>
+      <p style="margin:0;opacity:.92">Le transporteur vient de déposer le colis de l'<b>Atelier Flocon</b>. Avant de signer le bon de livraison, vous devez tout contrôler. Ensuite, vous faites l'inventaire du stock Noël en réserve.</p>
+      <div class="meta"><span>⏱ 50 min</span><span>👥 Chef · Rédacteur · Contrôleur</span><span>Bloc 4A — Opérations préalables à la vente</span></div>
+    </div>
+
+    <div class="carte">
+      <h3>Les étapes</h3>
+      <ol class="etapes">
+        <li><label><input type="checkbox" data-k="m1_e1"> Lire le bon de commande (BC) et le bon de livraison (BL) : repérer le fournisseur, les numéros et les dates.</label></li>
+        <li><label><input type="checkbox" data-k="m1_e2"> Contrôler l'extérieur du colis (nombre de cartons, carton ouvert, écrasé, mouillé ?).</label></li>
+        <li><label><input type="checkbox" data-k="m1_e3"> Ouvrir le colis, compter chaque article, vérifier la référence et l'état.</label></li>
+        <li><label><input type="checkbox" data-k="m1_e4"> Compléter la fiche de contrôle BC / BL / colis et repérer toutes les anomalies.</label></li>
+        <li><label><input type="checkbox" data-k="m1_e5"> Rédiger les réserves à inscrire sur le BL et le message au fournisseur.</label></li>
+        <li><label><input type="checkbox" data-k="m1_e6"> Faire l'inventaire de la famille de produits attribuée par le professeur (rayon + réserve).</label></li>
+        <li><label><input type="checkbox" data-k="m1_e7"> Ranger : articles conformes en réserve, articles en litige à part avec une étiquette « LITIGE ».</label></li>
+      </ol>
+    </div>
+
+    <div class="section-t"><span class="n">DOC 1</span><h3 style="margin:0">Le bon de commande</h3></div>
+    <div class="doc">
+      <div class="dhead"><div><div class="dtitre">BON DE COMMANDE</div>N° BC-LB-2026-112 · du 20/11/2026</div><div><b>Client :</b> LB Shop (magasin pédagogique)<br><b>Fournisseur :</b> Atelier Flocon, déco & accessoires d'hiver</div></div>
+      <div class="tabwrap"><table>
+        <thead><tr><th>Réf.</th><th>Désignation</th><th class="num">Qté</th><th class="num">PU HT</th><th class="num">Montant HT</th></tr></thead>
+        <tbody id="t-bc"></tbody>
+      </table></div>
+      <div class="petit-txt">Livraison souhaitée : 26/11/2026 · Conditions : paiement à 30 jours</div>
+    </div>
+
+    <div class="section-t"><span class="n">DOC 2</span><h3 style="margin:0">Le bon de livraison</h3></div>
+    <div class="doc">
+      <div class="dhead"><div><div class="dtitre">BON DE LIVRAISON</div>N° BL-AF-5581 · du 26/11/2026<br>Réf. commande : BC-LB-2026-112</div><div><b>Expéditeur :</b> Atelier Flocon<br><b>Destinataire :</b> LB Shop<br><b>Nombre de colis :</b> 1</div></div>
+      <div class="tabwrap"><table>
+        <thead><tr><th>Réf.</th><th>Désignation</th><th class="num">Qté livrée</th><th>Observation</th></tr></thead>
+        <tbody id="t-bl"></tbody>
+      </table></div>
+      <div class="petit-txt">Signature du client précédée de la mention « sous réserve de déballage et de contrôle » : ……………………</div>
+    </div>
+
+    <details class="no-print">
+      <summary>📦 Contenu du colis (à ouvrir seulement si le professeur vous le demande)</summary>
+      <div class="encadre">Si le carton réel n'est pas disponible, voici ce que l'équipe trouve en ouvrant le colis :
+        <ul id="colis-liste" style="margin:6px 0 0"></ul>
+      </div>
+    </details>
+
+    <div class="section-t"><span class="n">1</span><h3 style="margin:0">Fiche de contrôle de la réception</h3></div>
+    <p class="petit-txt" style="margin-top:0">L'écart (reçu − commandé) se calcule tout seul. Un écart en rouge = il manque des articles.</p>
+    <div class="tabwrap"><table>
+      <thead><tr><th>Réf. BC</th><th>Désignation</th><th class="num">Qté BC</th><th class="num">Qté BL</th><th>Qté comptée</th><th>Écart</th><th>Anomalie constatée</th><th>Action</th></tr></thead>
+      <tbody id="t-ctrl"></tbody>
+    </table></div>
+    <div class="lbl" style="margin-top:12px">Articles reçus mais non commandés</div>
+    <div class="tabwrap"><table>
+      <thead><tr><th>Réf.</th><th>Désignation</th><th>Qté</th><th>Action</th></tr></thead>
+      <tbody id="t-nc"></tbody>
+    </table></div>
+
+    <div class="grille2">
+      <div class="champ"><label>Réserves à écrire sur le BL avant de signer (précises : réf., quantité, problème)</label><textarea data-k="m1_reserves" placeholder="Ex. : Réf. … : … articles manquants"></textarea></div>
+      <div class="champ"><label>Message au fournisseur (mail professionnel, 5 lignes max.)</label><textarea data-k="m1_mail" placeholder="Objet : … / Madame, Monsieur, …"></textarea></div>
+    </div>
+
+    <div class="section-t"><span class="n">2</span><h3 style="margin:0">Questions</h3></div>
+    <div class="champ"><label>a) Quelle est la différence entre un bon de commande et un bon de livraison ? Qui rédige chacun ?</label><textarea data-k="m1_q1"></textarea></div>
+    <div class="champ"><label>b) Pourquoi ne faut-il jamais signer le BL « sans réserve » avant d'avoir contrôlé ?</label><textarea data-k="m1_q2"></textarea></div>
+    <div class="champ"><label>c) Que veut dire « reliquat » ?</label><textarea data-k="m1_q3"></textarea></div>
+
+    <div class="section-t"><span class="n">3</span><h3 style="margin:0">Inventaire de votre famille de produits</h3></div>
+    <p class="petit-txt" style="margin-top:0">Le professeur attribue une famille de produits à votre équipe. Vous la comptez <b>en rayon et en réserve</b>.</p>
+    <div class="grille2" style="align-items:start">
+      <div>
+        <div class="champ"><label>Famille de produits attribuée</label>
+          <select class="f" data-k="m1_theme" id="m1-theme"></select>
+        </div>
+        <div class="champ" id="m1-theme-autre-z" style="display:none"><label>Précisez la famille</label><input type="text" data-k="m1_theme_autre"></div>
+        <div class="grille2" style="gap:10px">
+          <div class="champ"><label>Date de l'inventaire</label><input type="text" data-k="m1_inv_date" placeholder="jj/mm/aaaa"></div>
+          <div class="champ"><label>Compté par / vérifié par</label><input type="text" data-k="m1_inv_qui"></div>
+        </div>
+      </div>
+      <div class="encadre" id="m1-theme-fiche" style="margin:0"><b>Choisissez la famille attribuée par le professeur</b> pour afficher les consignes de comptage.</div>
+    </div>
+    <div class="encadre"><b>Méthode commune :</b> on compte <b>par zone</b>, de gauche à droite et de haut en bas ; on ne déplace pas les produits pendant le comptage ; on compte deux fois (un compteur, un vérificateur) ; on sépare les produits abîmés ; on ne vend rien de la zone pendant l'inventaire.</div>
+    <div class="tabwrap"><table>
+      <thead><tr><th>Emplacement</th><th>Réf.</th><th>Désignation</th><th>Quantité comptée</th><th>État</th><th>Observation</th></tr></thead>
+      <tbody id="t-inv"></tbody>
+    </table></div>
+    <div class="grille2">
+      <div class="champ"><label>Nombre de références comptées / nombre total d'articles comptés</label><input type="text" data-k="m1_inv_bilan"></div>
+      <div class="champ"><label>Produits retirés de la vente (abîmés, périmés, incomplets) et où vous les avez mis</label><input type="text" data-k="m1_inv_retires"></div>
+    </div>
+    <div class="champ"><label>Quels problèmes avez-vous constatés pendant le comptage ? (produits mal rangés, abîmés, sans étiquette, mélangés…)</label><textarea data-k="m1_inv_expl"></textarea></div>
+    <div class="champ"><label>Une proposition pour mieux ranger ou mieux suivre le stock de cette famille</label><textarea data-k="m1_inv_prop"></textarea></div>
+
+    <div class="section-t"><span class="n">★</span><h3 style="margin:0">Bonus : valeur de la commande</h3></div>
+    <div class="grille4" style="align-items:end">
+      <div class="champ"><label>Total HT (€)</label><input type="text" data-k="m1_ht" inputmode="decimal"></div>
+      <div class="champ"><label>TVA 20 % (€)</label><input type="text" data-k="m1_tva" inputmode="decimal"></div>
+      <div class="champ"><label>Total TTC (€)</label><input type="text" data-k="m1_ttc" inputmode="decimal"></div>
+      <div class="champ"><button class="btn sec" id="b-m1-verif">Vérifier mes calculs</button> <span id="m1-verif-res" class="petit-txt"></span></div>
+    </div>
+    <div class="rendu" data-m="1"></div>
+  </article>
+
+  <!-- ===== MISSION 2 ===== -->
+  <article class="mission" id="m2">
+    <div class="mhead">
+      <div class="pastille o">Mission 2 · Pôle espace de vente</div>
+      <h2>Vente-conseil de Noël : argumentaire CAB & jeu de rôle</h2>
+      <p style="margin:0;opacity:.92">Les clients cherchent LE cadeau. Préparez un argumentaire sur un produit de Noël du magasin, puis vendez-le en respectant toutes les étapes de la vente. Chacun passe une fois vendeur.</p>
+      <div class="meta"><span>⏱ 50 min (20 min préparation + 3 × 10 min)</span><span>👥 Vendeur · Client · Observateur</span><span>Bloc 1 — Conseiller et vendre</span></div>
+    </div>
+
+    <div class="carte">
+      <h3>Les étapes</h3>
+      <ol class="etapes">
+        <li><label><input type="checkbox" data-k="m2_e1"> Choisir un produit « cadeau de Noël » dans le magasin, relever ses caractéristiques et son prix, le photographier.</label></li>
+        <li><label><input type="checkbox" data-k="m2_e2"> Construire 3 arguments CAB (Caractéristique → Avantage → Bénéfice client).</label></li>
+        <li><label><input type="checkbox" data-k="m2_e3"> Préparer la réponse à 2 objections et une vente additionnelle.</label></li>
+        <li><label><input type="checkbox" data-k="m2_e4"> Passage 1, 2, 3 : le client tire une carte, le vendeur vend, l'observateur coche la grille. On change de rôle à chaque passage.</label></li>
+        <li><label><input type="checkbox" data-k="m2_e5"> Débriefing en équipe : points forts et axes de progrès de chaque vendeur.</label></li>
+      </ol>
+    </div>
+
+    <div class="encadre"><b>Rappel : les étapes de la vente</b><br>
+      ① Accueil / prise de contact (SBAM : Sourire, Bonjour, Au revoir, Merci) → ② Découverte des besoins (questions ouvertes, écoute) → ③ Reformulation → ④ Présentation du produit & argumentation CAB → ⑤ Traitement des objections → ⑥ Vente additionnelle / services (paquet cadeau, carte) → ⑦ Conclusion de la vente → ⑧ Prise de congé & fidélisation.
+    </div>
+
+    <div class="section-t"><span class="n">1</span><h3 style="margin:0">Le produit choisi</h3></div>
+    <div class="grille2">
+      <div>
+        <div class="champ"><label>Nom du produit</label><input type="text" data-k="m2_prod"></div>
+        <div class="grille2" style="gap:10px">
+          <div class="champ"><label>Prix TTC</label><input type="text" data-k="m2_prix"></div>
+          <div class="champ"><label>Rayon</label><input type="text" data-k="m2_rayon"></div>
+        </div>
+        <div class="champ"><label>Pour qui est-ce un bon cadeau ? (cible)</label><input type="text" data-k="m2_cible"></div>
+      </div>
+      <div class="photo" data-photo="m2_photo"></div>
+    </div>
+
+    <div class="section-t"><span class="n">2</span><h3 style="margin:0">Mon argumentaire CAB</h3></div>
+    <div class="tabwrap"><table>
+      <thead><tr><th style="width:4%">#</th><th>Caractéristique<br><span style="text-transform:none;font-weight:400">ce qu'est le produit</span></th><th>Avantage<br><span style="text-transform:none;font-weight:400">ce qu'il permet</span></th><th>Bénéfice client<br><span style="text-transform:none;font-weight:400">« pour vous, cela veut dire… »</span></th></tr></thead>
+      <tbody id="t-cab"></tbody>
+    </table></div>
+
+    <div class="section-t"><span class="n">3</span><h3 style="margin:0">Objections & vente additionnelle</h3></div>
+    <div class="tabwrap"><table>
+      <thead><tr><th>Objection possible du client</th><th>Ma réponse (méthode : reformuler, « oui, et… », preuve, alternative)</th></tr></thead>
+      <tbody id="t-obj"></tbody>
+    </table></div>
+    <div class="grille2">
+      <div class="champ"><label>Vente additionnelle proposée (produit complémentaire, paquet cadeau, carte…)</label><textarea data-k="m2_va"></textarea></div>
+      <div class="champ"><label>Ma phrase d'accueil et ma phrase de prise de congé « spéciale Noël »</label><textarea data-k="m2_phrases"></textarea></div>
+    </div>
+
+    <div class="section-t"><span class="n">4</span><h3 style="margin:0">Les cartes clients</h3></div>
+    <p class="petit-txt" style="margin-top:0">Le <b>client</b> tire une carte et la lit en silence. Il ne montre pas l'« info secrète » au vendeur : c'est au vendeur de la découvrir avec ses questions.</p>
+    <button class="btn rouge" id="b-tirer">🎁 Tirer une carte client</button>
+    <div class="clients" id="clients" style="margin-top:12px"></div>
+
+    <div class="section-t"><span class="n">5</span><h3 style="margin:0">Grille de l'observateur</h3></div>
+    <div class="tabwrap"><table id="t-grille">
+      <thead><tr><th>Étape observée</th><th>Passage 1</th><th>Passage 2</th><th>Passage 3</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <div class="grille2" id="debrief"></div>
+    <div class="rendu" data-m="2"></div>
+  </article>
+
+  <!-- ===== MISSION 3 ===== -->
+  <article class="mission" id="m3">
+    <div class="mhead">
+      <div class="pastille o">Mission 3 · Pôle merchandising</div>
+      <h2>Les rayons passent à l'hiver</h2>
+      <p style="margin:0;opacity:.92">Le professeur vous attribue un rayon. Vêtements femme ou enfant : on retire l'été et on installe l'hiver. Vaisselle ou décoration : on réaménage le rayon pour les fêtes. Objectif : donner envie d'acheter.</p>
+      <div class="meta"><span>⏱ 50 min</span><span>👥 Chef · Rédacteur · Contrôleur-photographe</span><span>Bloc 4A — Rendre l'unité commerciale attractive</span></div>
+    </div>
+
+    <div class="carte">
+      <div class="grille2">
+        <div class="champ"><label>Rayon attribué par le professeur</label>
+          <select class="f" data-k="m3_rayon" id="m3-rayon"></select>
+        </div>
+        <div class="encadre attention" style="margin:0"><b>Sécurité :</b> pas d'escabeau sans adulte, produits lourds en bas, aucun câble de guirlande dans les passages, fragiles hors de portée des enfants.</div>
+      </div>
+      <div class="encadre" id="m3-fiche"><b>Choisissez le rayon attribué par le professeur</b> pour afficher votre mission précise.</div>
+      <h3 style="margin-top:10px">Les étapes</h3>
+      <ol class="etapes">
+        <li><label><input type="checkbox" data-k="m3_e1"> Photo « AVANT » du rayon et diagnostic : qu'est-ce qui ne va pas ?</label></li>
+        <li><label><input type="checkbox" data-k="m3_e2"> Retirer les produits qui ne sont plus de saison ou mal placés : les compter, les ranger en réserve dans un carton étiqueté.</label></li>
+        <li><label><input type="checkbox" data-k="m3_e3"> Nettoyer le rayon (poussière, étagères, sol).</label></li>
+        <li><label><input type="checkbox" data-k="m3_e4"> Choisir les produits à implanter et dessiner un plan rapide sur papier (niveaux, zones).</label></li>
+        <li><label><input type="checkbox" data-k="m3_e5"> Implanter selon les consignes de votre rayon : familles regroupées, facing, produits lourds en bas, harmonie des couleurs.</label></li>
+        <li><label><input type="checkbox" data-k="m3_e6"> Baliser : un prix visible pour chaque produit, étiquettes alignées.</label></li>
+        <li><label><input type="checkbox" data-k="m3_e7"> Ajouter une touche d'ambiance Noël (PLV, décor) sans gêner l'accès aux produits.</label></li>
+        <li><label><input type="checkbox" data-k="m3_e8"> Photo « APRÈS » et contrôle qualité.</label></li>
+      </ol>
+    </div>
+
+    <div class="section-t"><span class="n">1</span><h3 style="margin:0">Avant / après</h3></div>
+    <div class="photos">
+      <div class="photo" data-photo="m3_avant" data-titre="Photo AVANT"></div>
+      <div class="photo" data-photo="m3_apres" data-titre="Photo APRÈS"></div>
+    </div>
+    <div class="champ"><label>Diagnostic du rayon avant (3 problèmes au moins)</label><textarea data-k="m3_diag"></textarea></div>
+
+    <div class="section-t"><span class="n">2</span><h3 style="margin:0" id="m3-t-retires">Produits retirés du rayon</h3></div>
+    <div class="tabwrap"><table>
+      <thead><tr><th>Désignation</th><th>Quantité</th><th>Rangé où ?</th></tr></thead>
+      <tbody id="t-retires"></tbody>
+    </table></div>
+    <button class="btn sec petit no-print" data-addrow="ret">➕ Ajouter une ligne</button>
+
+    <div class="section-t"><span class="n">3</span><h3 style="margin:0" id="m3-t-implantes">Produits implantés</h3></div>
+    <div class="tabwrap"><table>
+      <thead><tr><th>Désignation</th><th>Prix</th><th>Niveau</th><th>Pourquoi à cet endroit ?</th></tr></thead>
+      <tbody id="t-implantes"></tbody>
+    </table></div>
+    <button class="btn sec petit no-print" data-addrow="imp">➕ Ajouter une ligne</button>
+
+    <div class="section-t"><span class="n">4</span><h3 style="margin:0">Contrôle qualité (contrôleur)</h3></div>
+    <div class="coche" id="m3-qualite"></div>
+    <div class="lbl" style="margin-top:12px" id="m3-qs-titre"></div>
+    <div class="coche" id="m3-qualite-spe"></div>
+
+    <div class="section-t"><span class="n">5</span><h3 style="margin:0">Questions</h3></div>
+    <div class="champ"><label>a) Pourquoi le niveau des yeux est-il appelé « le niveau qui vend » ? Quels produits y placer ?</label><textarea data-k="m3_q1"></textarea></div>
+    <div class="champ"><label>b) Qu'est-ce que le « facing » ? Pourquoi le faire ?</label><textarea data-k="m3_q2"></textarea></div>
+    <div class="champ"><label>c) Pourquoi un magasin doit-il changer ses rayons selon les saisons et les événements commerciaux comme Noël ?</label><textarea data-k="m3_q3"></textarea></div>
+    <div class="rendu" data-m="3"></div>
+  </article>
+
+  <!-- ===== MISSION 4 ===== -->
+  <article class="mission" id="m4">
+    <div class="mhead">
+      <div class="pastille o">Mission 4 · Pôle service client</div>
+      <h2>Commande cadeau : préparation & paquet de Noël</h2>
+      <p style="margin:0;opacity:.92">Un client a passé une commande en « click & collect » avec paquet cadeau. Le professeur vous donne les articles commandés. Préparez la commande sans erreur, emballez-la comme dans une boutique de qualité et prévenez le client.</p>
+      <div class="meta"><span>⏱ 50 min</span><span>👥 Préparateur · Emballeur · Contrôleur</span><span>Bloc 2 — Suivi de la commande & services associés</span></div>
+    </div>
+
+    <div class="carte">
+      <h3>Les étapes</h3>
+      <ol class="etapes">
+        <li><label><input type="checkbox" data-k="m4_e1"> Recopier les articles donnés par le professeur dans la commande, puis la lire : qui ? quoi ? combien ? quand ? quel service ?</label></li>
+        <li><label><input type="checkbox" data-k="m4_e2"> Prélever les articles en rayon ou en réserve (fiche de préparation).</label></li>
+        <li><label><input type="checkbox" data-k="m4_e3"> Contrôle par une 2<sup>e</sup> personne : bonne réf., bonne quantité, bon état. Retirer les étiquettes de prix !</label></li>
+        <li><label><input type="checkbox" data-k="m4_e4"> Emballer en paquet cadeau (mesurer, couper, plier, scotch discret, ruban, étiquette).</label></li>
+        <li><label><input type="checkbox" data-k="m4_e5"> Écrire la carte de vœux et l'étiquette de retrait (nom, n° de commande).</label></li>
+        <li><label><input type="checkbox" data-k="m4_e6"> Calculer le montant, compléter la fiche de suivi et rédiger le SMS « commande prête ».</label></li>
+        <li><label><input type="checkbox" data-k="m4_e7"> Ranger le poste d'emballage (chutes de papier, ciseaux, scotch).</label></li>
+      </ol>
+    </div>
+
+    <div class="section-t"><span class="n">DOC</span><h3 style="margin:0">Votre commande client</h3></div>
+    <div class="doc" id="m4-commande"></div>
+    <div class="lbl" style="margin-top:12px">Articles commandés (donnés par le professeur)</div>
+    <p class="petit-txt" style="margin-top:0">Recopiez la désignation et la quantité ; relevez le prix unitaire TTC sur l'étiquette du produit en magasin.</p>
+    <div class="tabwrap"><table>
+      <thead><tr><th style="width:4%">#</th><th>Désignation</th><th>Quantité</th><th>Prix unitaire TTC (€)</th></tr></thead>
+      <tbody id="t-lignes"></tbody>
+    </table></div>
+
+    <div class="section-t"><span class="n">1</span><h3 style="margin:0">Fiche de préparation</h3></div>
+    <div class="tabwrap"><table>
+      <thead><tr><th>Désignation</th><th class="num">Qté commandée</th><th>Qté prélevée</th><th>Emplacement</th><th>État OK</th><th>Prix retiré</th><th>Observation</th></tr></thead>
+      <tbody id="t-prep"></tbody>
+    </table></div>
+
+    <div class="section-t"><span class="n">2</span><h3 style="margin:0">Le paquet cadeau</h3></div>
+    <div class="grille2">
+      <div class="photo" data-photo="m4_paquet" data-titre="Photo du paquet terminé"></div>
+      <div>
+        <div class="lbl">Contrôle qualité de l'emballage</div>
+        <div class="coche" id="m4-qualite" style="grid-template-columns:1fr"></div>
+      </div>
+    </div>
+    <div class="grille2">
+      <div class="champ"><label>Texte de la carte de vœux</label><textarea data-k="m4_carte"></textarea></div>
+      <div class="champ"><label>Étiquette de retrait (n° commande, nom, nombre de paquets)</label><textarea data-k="m4_etiq"></textarea></div>
+    </div>
+
+    <div class="section-t"><span class="n">3</span><h3 style="margin:0">Montant & suivi de la commande</h3></div>
+    <div class="grille4" style="align-items:end">
+      <div class="champ"><label>Montant total TTC (€)</label><input type="text" data-k="m4_total" inputmode="decimal"></div>
+      <div class="champ"><button class="btn sec" id="b-m4-verif">Vérifier</button> <span id="m4-verif-res" class="petit-txt"></span></div>
+      <div class="champ"><label>Heure de début</label><input type="time" data-k="m4_hdeb"></div>
+      <div class="champ"><label>Heure « commande prête »</label><input type="time" data-k="m4_hfin"></div>
+    </div>
+    <div class="grille2">
+      <div class="champ"><label>Préparé par / contrôlé par</label><input type="text" data-k="m4_qui"></div>
+      <div class="champ"><label>Statut</label><select class="f" data-k="m4_statut"><option value="">—</option><option>En préparation</option><option>Prête — en attente de retrait</option><option>Problème : article manquant</option></select></div>
+    </div>
+    <div class="champ"><label>SMS au client pour le prévenir (160 caractères max., poli et précis)</label><textarea data-k="m4_sms" maxlength="160"></textarea><span class="petit-txt" id="sms-cpt">0 / 160</span></div>
+
+    <div class="section-t"><span class="n">4</span><h3 style="margin:0">Questions</h3></div>
+    <div class="champ"><label>a) Qu'est-ce qu'un « service associé » ? Citez-en trois proposés par les magasins à Noël.</label><textarea data-k="m4_q1"></textarea></div>
+    <div class="champ"><label>b) En quoi un beau paquet cadeau et une commande prête à l'heure fidélisent-ils le client ?</label><textarea data-k="m4_q2"></textarea></div>
+    <div class="rendu" data-m="4"></div>
+  </article>
+</section>
+
+<!-- ============ VUE : PLANNING ============ -->
+<section class="vue" id="v-planning">
+  <h2>Planning des 2 séances</h2>
+  <div class="carte">
+    <h3>Déroulé d'une séance de 2 h</h3>
+    <div class="tabwrap"><table>
+      <thead><tr><th>Horaire</th><th>Ce qu'on fait</th></tr></thead>
+      <tbody>
+        <tr><td>0:00 – 0:10</td><td>Accueil, consignes, choix du groupe et de l'équipe, répartition des rôles (ou « Reprendre une sauvegarde »).</td></tr>
+        <tr><td>0:10 – 1:00</td><td><b>Créneau 1</b> : première mission (50 min), puis « Rendre la mission ».</td></tr>
+        <tr><td>1:00 – 1:50</td><td><b>Créneau 2</b> : deuxième mission (50 min), on change de pôle et de rôles.</td></tr>
+        <tr><td>1:50 – 2:00</td><td>Rangement des pôles, <b>téléchargement de la sauvegarde</b>, bilan rapide.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="grille2">
+    <div class="carte"><h3>Groupe A</h3><div class="tabwrap"><table class="planning" id="plan-A"></table></div></div>
+    <div class="carte"><h3>Groupe B</h3><div class="tabwrap"><table class="planning" id="plan-B"></table></div></div>
+  </div>
+  <div class="legende" style="margin-top:0">
+    <span style="--c:#9cc9b4">M1 Réception & inventaire</span>
+    <span style="--c:#eda6aa">M2 Vente-conseil</span>
+    <span style="--c:#e9c86b">M3 Rayon hiver</span>
+    <span style="--c:#a9b6db">M4 Commande & paquet</span>
+  </div>
+  <p class="petit-txt">À chaque créneau, les 4 équipes d'un groupe sont sur 4 pôles différents : personne ne se gêne. À la fin des 2 séances, chaque équipe a réalisé les 4 missions.</p>
+</section>
+
+<!-- ============ VUE : RÉFÉRENTIEL ============ -->
+<section class="vue" id="v-ref">
+  <h2>Ce que vous travaillez — Bac Pro MCV option A</h2>
+  <div class="tabwrap"><table>
+    <thead><tr><th>Mission</th><th>Bloc de compétences</th><th>Compétences / activités travaillées</th><th>Savoirs associés</th></tr></thead>
+    <tbody>
+      <tr class="m1"><td><b>M1</b> Réception & inventaire</td><td>Bloc 4A — Animer et gérer l'espace commercial</td><td>Assurer les opérations préalables à la vente : réceptionner et contrôler les livraisons, signaler les anomalies, participer à l'inventaire, stocker.</td><td>BC, BL, reliquat, réserves, litige, stock théorique / physique, démarque, calcul HT-TVA-TTC.</td></tr>
+      <tr class="m2"><td><b>M2</b> Vente-conseil</td><td>Bloc 1 — Conseiller et vendre</td><td>Réaliser la vente : accueillir, découvrir les besoins, reformuler, argumenter, traiter les objections, proposer une vente additionnelle, conclure, prendre congé.</td><td>Étapes de la vente, méthode CAB, questions ouvertes / fermées, techniques de traitement des objections, communication verbale et non verbale.</td></tr>
+      <tr class="m3"><td><b>M3</b> Rayon hiver</td><td>Bloc 4A — Animer et gérer l'espace commercial</td><td>Rendre l'unité commerciale attractive et fonctionnelle : implanter les produits, mettre en valeur, baliser, renouveler l'assortiment selon la saison, respecter les règles d'hygiène et de sécurité.</td><td>Merchandising, niveaux de présentation, facing, implantation verticale / horizontale, PLV, balisage, saisonnalité.</td></tr>
+      <tr class="m4"><td><b>M4</b> Commande & paquet</td><td>Bloc 2 — Suivre les ventes<br>Bloc 3 — Fidéliser la clientèle</td><td>Assurer le suivi de la commande, mettre en œuvre les services associés (paquet cadeau, click & collect), informer le client, contribuer à sa satisfaction.</td><td>Commande client, préparation, contrôle, services associés, satisfaction et fidélisation, communication écrite (SMS).</td></tr>
+    </tbody>
+  </table></div>
+  <div class="carte" style="margin-top:18px">
+    <h3>Grille d'évaluation commune (par mission)</h3>
+    <div class="tabwrap"><table>
+      <thead><tr><th>Critère</th><th>Non acquis</th><th>En cours</th><th>Acquis</th><th>Expert</th></tr></thead>
+      <tbody>
+        <tr><td>Les étapes sont respectées dans l'ordre</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>La production est exacte (calculs, quantités, anomalies, arguments)</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Le vocabulaire professionnel est utilisé</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Qualité du résultat (rayon, paquet, vente)</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Travail d'équipe, rôles tenus, temps respecté, sécurité</td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============ VUE : PROF ============ -->
+<section class="vue" id="v-prof">
+  <h2>Espace professeur</h2>
+  <div class="grille2">
+    <div class="carte">
+      <h3>Matériel à préparer</h3>
+      <p><b>M1 Réception</b> — Un carton fermé avec les articles du colis (voir corrigé ci-contre ; prendre de vrais articles du magasin et les étiqueter avec les réf. NOE), le BC et le BL imprimés, étiquettes « LITIGE ».</p>
+      <p><b>M1 Inventaire</b> — Chaque équipe choisit dans la page la famille de produits que vous lui attribuez. Les consignes de comptage s'adaptent à la famille. Familles proposées : vêtements femme, vêtements enfant, accessoires enfant, vaisselle, produits d'entretien, déco de Noël, décoration (hors Noël), jeux & jouets, alimentaire, bijoux & accessoires, beauté / colorations, papeterie & emballage cadeau, et « autre » (à préciser).</p>
+      <p><b>M2 Vente</b> — Un coin vente avec comptoir, produits de Noël, une caisse ou un TPE factice. Les cartes clients sont dans la page (bouton « Tirer une carte »), on peut aussi les imprimer.</p>
+      <p><b>M3 Rayons</b> — 4 rayons au choix dans la page : vêtements femme et vêtements enfant (retirer l'été, installer l'hiver), vaisselle et décoration (réaménagement pour les fêtes). Vous attribuez le rayon à chaque équipe ; les consignes et le contrôle qualité s'adaptent. Cartons + étiquettes « SAISON ÉTÉ », chiffons, étiquettes prix, PLV de Noël.</p>
+      <p><b>M4 Commande</b> — Poste d'emballage : papier cadeau (2 motifs), ciseaux, scotch, ruban, bolduc, étiquettes, cartes de vœux, papier bulle pour les fragiles. Vous donnez à chaque équipe la liste des articles à préparer (le nom du client change selon le numéro d'équipe).</p>
+      <p><b>Tablettes / PC</b> — 1 appareil par équipe et par pôle (la page fonctionne aussi sur tablette ; l'appareil photo s'ouvre avec les boutons photo).</p>
+    </div>
+    <div class="carte">
+      <h3>Corrigé M1 : contenu du colis et anomalies</h3>
+      <div class="tabwrap"><table>
+        <thead><tr><th>Réf.</th><th>BC</th><th>BL</th><th>Colis</th><th>Anomalie / action</th></tr></thead>
+        <tbody id="t-corrige"></tbody>
+      </table></div>
+      <p class="petit-txt">Valeur de la commande : 418,60 € HT · TVA 83,72 € · 502,32 € TTC.<br>
+      Réserves : écrites sur le BL, datées, signées, puis confirmées au transporteur dans les 3 jours (hors jours fériés) par lettre recommandée (art. L133-3 du Code de commerce).</p>
+      <h3 style="margin-top:14px">M4 : commandes</h3>
+      <p class="petit-txt" style="margin:0">Vous attribuez les articles de chaque commande (de 2 à 6 lignes). Les élèves les recopient avec le prix relevé en magasin. Le bouton « Vérifier » contrôle leur total à partir de ce qu'ils ont saisi.</p>
+    </div>
+  </div>
+  <div class="carte">
+    <h3>Récupérer et évaluer le travail</h3>
+    <ul style="margin:0;padding-left:18px">
+      <li>En fin de séance, chaque équipe clique sur « Télécharger ma sauvegarde » (fichier <code>LBShop-Noel_A-E1.json</code>…) et le dépose dans le dossier de classe / l'ENT.</li>
+      <li>Pour corriger : ouvrez la page, choisissez le groupe et l'équipe, « Reprendre une sauvegarde », puis « Imprimer / PDF » : vous obtenez un compte rendu complet avec photos.</li>
+      <li>Les élèves peuvent aussi imprimer en PDF directement leur compte rendu.</li>
+      <li>Le groupe B utilise les mêmes postes : chaque équipe a sa propre sauvegarde automatique (groupe + équipe), elles ne s'écrasent pas.</li>
+    </ul>
+  </div>
+</section>
+
+</div>
+</main>
+
+<div class="pied" aria-hidden="true">
+  <svg viewBox="0 0 1200 150" preserveAspectRatio="xMidYMax slice">
+    <path d="M0 120 Q300 95 600 118 T1200 112 L1200 150 L0 150 Z" fill="#ffffff"/>
+    <g fill="#0f4a36">
+      <use href="#sapin" x="40" y="40" width="60" height="90"/><use href="#sapin" x="95" y="70" width="40" height="60"/>
+      <use href="#sapin" x="1060" y="30" width="70" height="105"/><use href="#sapin" x="1120" y="70" width="40" height="60"/>
+    </g>
+    <g fill="#8e1622" style="color:#8e1622"><use href="#traineau" x="480" y="70" width="110" height="55"/></g>
+    <path d="M590 102 Q640 94 690 98 Q740 92 790 96" fill="none" stroke="#a8812a" stroke-width="1.4"/>
+    <g fill="#a8812a" style="color:#a8812a"><use href="#renne" x="680" y="58" width="70" height="56"/><use href="#renne" x="770" y="54" width="70" height="56"/></g>
+    <g><rect x="150" y="104" width="24" height="20" fill="#c22a35"/><rect x="160" y="104" width="4" height="20" fill="#ffe39a"/><rect x="176" y="110" width="18" height="14" fill="#1f8656"/><rect x="183" y="110" width="4" height="14" fill="#ffe39a"/>
+       <rect x="1000" y="106" width="22" height="18" fill="#d9b04c"/><rect x="1009" y="106" width="4" height="18" fill="#c22a35"/></g>
+  </svg>
+</div>
+<div id="rapport"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= DONNÉES ================= */
+const MISSIONS = {
+  1:{t:"Réception & inventaire", c:"m1"},
+  2:{t:"Vente-conseil CAB", c:"m2"},
+  3:{t:"Les rayons passent à l'hiver", c:"m3"},
+  4:{t:"Commande & paquet cadeau", c:"m4"}
+};
+// ROT[groupe][séance][créneau][équipe-1] = n° de mission
+const ROT = {
+  A:[[[1,2,3,4],[2,1,4,3]],[[3,4,1,2],[4,3,2,1]]],
+  B:[[[3,4,1,2],[4,3,2,1]],[[1,2,3,4],[2,1,4,3]]]
+};
+const BC = [
+  ["NOE-001","Boules de Noël verre rouge (lot de 6)",10,4.50],
+  ["NOE-014","Guirlande lumineuse LED 5 m",6,8.90],
+  ["NOE-022","Bonnet tricot enfant",8,7.50],
+  ["NOE-031","Chaussette de Noël à garnir",12,3.90],
+  ["NOE-045","Coffret bougies parfumées cannelle",5,12.00],
+  ["NOE-052","Peluche renne 25 cm",6,9.90],
+  ["NOE-060","Papier cadeau, rouleau 2 m",20,1.80],
+  ["NOE-073","Écharpe femme laine grise",4,14.50]
+];
+const BL = [
+  ["NOE-001","Boules de Noël verre rouge (lot de 6)",10,""],
+  ["NOE-014","Guirlande lumineuse LED 5 m",4,"Reliquat 2 : livraison ultérieure"],
+  ["NOE-023","Bonnet tricot adulte",8,""],
+  ["NOE-031","Chaussette de Noël à garnir",12,""],
+  ["NOE-045","Coffret bougies parfumées cannelle",5,""],
+  ["NOE-052","Peluche renne 25 cm",6,""],
+  ["NOE-060","Papier cadeau, rouleau 2 m",20,""],
+  ["NOE-073","Écharpe femme laine grise",4,""],
+  ["NOE-088","Calendrier de l'Avent en bois",3,""]
+];
+const COLIS = [
+  "10 lots de boules de Noël rouges (NOE-001), en bon état",
+  "4 guirlandes LED 5 m (NOE-014)",
+  "8 bonnets tricot ADULTE (NOE-023)",
+  "12 chaussettes de Noël (NOE-031)",
+  "5 coffrets bougies cannelle (NOE-045)",
+  "5 peluches renne (NOE-052)",
+  "20 rouleaux de papier cadeau (NOE-060), dont 2 déchirés",
+  "4 écharpes laine grise (NOE-073)",
+  "3 calendriers de l'Avent en bois (NOE-088)"
+];
+const CORRIGE = [
+  ["NOE-001",10,10,10,"Conforme : accepter"],
+  ["NOE-014",6,4,4,"Reliquat de 2 noté par le fournisseur : attendre la livraison, le suivre"],
+  ["NOE-022",8,"0 (NOE-023)",8,"Erreur de référence : bonnets adulte au lieu d'enfant → réserve + retour"],
+  ["NOE-031",12,12,12,"Conforme"],
+  ["NOE-045",5,5,5,"Conforme"],
+  ["NOE-052",6,6,5,"1 manquant alors que le BL indique 6 → réserve sur le BL"],
+  ["NOE-060",20,20,20,"2 rouleaux déchirés → réserve, demande d'avoir ou de remplacement"],
+  ["NOE-073",4,4,4,"Conforme"],
+  ["NOE-088","—",3,3,"Non commandé → refuser ou retour fournisseur (sinon facturé)"]
+];
+// Familles de produits pour l'inventaire (M1)
+const THEMES = {
+  "Vêtements femme":{ou:"Rayon femme (portants, tables), cabine d'essayage, réserve textile.",var:"Taille / couleur",c:["Comptez par modèle, puis par taille et par couleur (1 ligne = 1 taille d'un modèle).","Vérifiez la cabine d'essayage et les vêtements mal rangés dans d'autres rayons.","Contrôlez l'état : tache, accroc, bouton manquant, étiquette absente.","Repliez ou recintrez au fur et à mesure, sans mélanger les tailles."]},
+  "Vêtements enfant":{ou:"Rayon enfant, cabine, réserve textile.",var:"Taille (âge) / couleur",c:["Comptez par modèle puis par taille (âge : 2 ans, 4 ans…).","Séparez fille / garçon / mixte si le rayon est organisé ainsi.","Contrôlez l'état : tache, accroc, fermeture éclair, étiquette.","Attention aux petites pièces (boutons, pressions) qui se détachent : produit à retirer."]},
+  "Accessoires enfant":{ou:"Rayon enfant, présentoirs, réserve.",var:"Modèle / couleur",c:["Bonnets, gants, écharpes, barrettes, sacs… : un modèle = une ligne.","Comptez les paires (gants, chaussons) comme 1 article : vérifiez qu'elles sont complètes.","Vérifiez les étiquettes de prix et l'âge conseillé.","Mettez à part les articles dépareillés."]},
+  "Vaisselle":{ou:"Rayon vaisselle / art de la table, réserve (cartons).",var:"Pièces par lot / couleur",c:["Manipulez avec deux mains, posez sur une surface stable, jamais en hauteur.","Comptez les lots (ex. : coffret de 6 verres = 1 lot) ET vérifiez qu'il est complet.","Vérifiez ébréchures, fêlures, emballage abîmé : à retirer de la vente.","Gardez les cartons d'origine en réserve, ne les mélangez pas."]},
+  "Produits d'entretien":{ou:"Rayon entretien, réserve (étagère basse).",var:"Contenance / parfum",c:["Lisez les pictogrammes de danger : on ne porte qu'un produit à la fois, bouchon vers le haut.","Comptez par produit ET par contenance (500 ml, 1 L…).","Vérifiez les fuites, bouchons ouverts, étiquettes illisibles : à isoler.","Rangez les produits d'entretien loin de l'alimentaire."]},
+  "Déco de Noël":{ou:"Rayon Noël, vitrine, réserve.",var:"Couleur / taille / lot",c:["Boules, guirlandes, figurines, bougies… : un modèle et une couleur = une ligne.","Pour les lots (boules par 6), vérifiez que le lot est complet.","Ne comptez pas les décorations du magasin (vitrine, sapin de déco) comme du stock à vendre : notez-les à part.","Fragiles : verre, céramique, à manipuler avec deux mains."]},
+  "Décoration (hors Noël)":{ou:"Rayon décoration, réserve.",var:"Couleur / dimension",c:["Cadres, vases, coussins, bougies, objets déco : un modèle = une ligne.","Notez les dimensions quand plusieurs tailles existent.","Contrôlez les objets fragiles et la poussière : à nettoyer avant remise en rayon.","Repérez les produits « d'été » qui devront être retirés (lien avec la mission 3)."]},
+  "Jeux & jouets":{ou:"Rayon jouets, réserve.",var:"Âge conseillé / modèle",c:["Comptez par référence ; vérifiez que la boîte est fermée et complète.","Repérez le marquage CE et l'âge conseillé (« ne convient pas aux moins de 3 ans »).","Boîte ouverte ou pièce manquante : produit à retirer de la vente.","Les jouets de démonstration ne sont pas du stock vendable : notez-les à part."]},
+  "Alimentaire":{ou:"Rayon alimentaire, réserve sèche.",var:"DLC / DDM (date)",c:["Lavez-vous les mains avant de manipuler l'alimentaire.","Comptez par produit ET par date : deux dates différentes = deux lignes.","Vérifiez les dates : DLC dépassée = retrait immédiat ; DDM proche = à signaler.","Contrôlez les emballages (gonflés, percés, écrasés). Rotation : les dates les plus courtes devant (FIFO)."]},
+  "Bijoux & accessoires":{ou:"Présentoirs bijoux, vitrine fermée, réserve.",var:"Modèle / couleur",c:["Petits articles : comptez sur un plateau, jamais au-dessus du sol.","Vérifiez les fermoirs, attaches, cartons de présentation.","Comptez les articles en vitrine fermée avec le professeur.","Repérez les antivols ou étiquettes manquants."]},
+  "Beauté / colorations":{ou:"Espace beauté, réserve.",var:"Teinte / numéro",c:["Comptez par marque, puis par teinte (numéro de coloration).","Vérifiez que les boîtes sont scellées et complètes.","Notez la date de péremption si elle existe (PAO, date limite).","Boîte ouverte ou abîmée : à retirer de la vente."]},
+  "Papeterie & emballage cadeau":{ou:"Rayon papeterie, poste d'emballage, réserve.",var:"Motif / format",c:["Rouleaux de papier, sacs cadeaux, rubans, étiquettes, cartes de vœux.","Ne comptez pas le matériel du poste d'emballage utilisé par le magasin : notez-le à part.","Vérifiez les rouleaux déchirés ou écrasés.","Regroupez par motif et par format."]},
+  "Autre (à préciser)":{ou:"Zone indiquée par le professeur.",var:"Variante",c:["Comptez par référence, puis par variante (taille, couleur, contenance…).","Contrôlez l'état de chaque article.","Séparez les articles abîmés.","Notez tout ce qui vous semble anormal."]}
+};
+function themeFiche(){
+  const t=state.f.m1_theme; const z=$("#m1-theme-fiche");
+  $("#m1-theme-autre-z").style.display = t==="Autre (à préciser)"?"":"none";
+  if(!t||!THEMES[t]){z.innerHTML=`<b>Choisissez la famille attribuée par le professeur</b> pour afficher les consignes de comptage.`;return;}
+  const d=THEMES[t];
+  z.innerHTML=`<b>🎄 ${t}</b><br><span class="petit-txt"><b>Où chercher :</b> ${d.ou}</span><ul style="margin:6px 0 0;padding-left:18px">${d.c.map(x=>`<li>${x}</li>`).join("")}</ul>`;
+}
+const CLIENTS = [
+  {n:"Mme Garnier, 68 ans", p:"Grand-mère souriante mais indécise.", b:"Un cadeau pour sa petite-fille de 6 ans.", bud:"25 € environ", obj:"« C'est un peu cher pour un jouet. »", s:"Sa petite-fille adore les animaux et vient d'avoir un chaton."},
+  {n:"Lucas, 19 ans", p:"Pressé, un peu gêné.", b:"Un cadeau pour sa copine, ils sont ensemble depuis 3 mois.", bud:"30 € maximum", obj:"« Je ne suis pas sûr que ça lui plaise. »", s:"Elle a toujours froid et porte souvent du gris et du blanc."},
+  {n:"M. Diallo, 45 ans", p:"Client pressé, entre pendant sa pause déjeuner.", b:"Un cadeau pour le « Secret Santa » du bureau.", bud:"15 €", obj:"« Je n'ai pas le temps de faire un paquet. »", s:"Il ne connaît pas bien la collègue tirée au sort : il veut quelque chose qui plaît à tout le monde."},
+  {n:"Mme Moreau, 35 ans", p:"Cliente bavarde, mère de deux enfants.", b:"Décorer sa maison pour recevoir sa famille le 24 au soir.", bud:"40 €", obj:"« J'ai vu moins cher sur Internet. »", s:"Elle veut une table « rouge et doré » et ses enfants ont 3 et 8 ans (attention aux objets fragiles)."}
+];
+const GRILLE = [
+  "① Accueil : sourire, bonjour, regard, attitude (SBAM)",
+  "② Découverte : questions ouvertes (pour qui ? quel âge ? quels goûts ? budget ?)",
+  "③ Reformulation du besoin",
+  "④ Présentation du produit + au moins 2 arguments CAB",
+  "⑤ Traitement de l'objection (calme, reformulation, réponse)",
+  "⑥ Vente additionnelle ou service proposé (paquet, carte…)",
+  "⑦ Conclusion : le client achète / prix annoncé / encaissement simulé",
+  "⑧ Prise de congé : remerciement, vœux, fidélisation",
+  "Les étapes ont été faites dans l'ordre",
+  "Vocabulaire professionnel, vouvoiement, pas de tics de langage"
+];
+const COMMANDES = {
+  1:{num:"CC-1201", client:"Mme Laurent", tel:"06 •• •• •• 12", retrait:"samedi, 10 h", service:"Paquet cadeau", carte:"« Joyeux Noël ! »"},
+  2:{num:"CC-1202", client:"M. Benali", tel:"06 •• •• •• 47", retrait:"vendredi, 17 h 30", service:"Paquet cadeau", carte:"« Pour maman, avec tout notre amour »"},
+  3:{num:"CC-1203", client:"Mme Rossi", tel:"07 •• •• •• 03", retrait:"mercredi, 14 h", service:"Paquet cadeau (protéger les articles fragiles)", carte:"« Belles fêtes de fin d'année »"},
+  4:{num:"CC-1204", client:"M. Petit", tel:"06 •• •• •• 88", retrait:"samedi, 11 h", service:"Paquet cadeau", carte:"« Pour Tom et Inès, joyeux Noël ! »"}
+};
+const Q_M3 = ["Rayon propre (étagères, sol)","Un prix visible sur chaque produit","Facing réalisé, produits alignés","Produits lourds ou volumineux en bas","Familles de produits regroupées","PLV en bon état, ne cache pas les produits","Aucun câble ou objet dangereux dans le passage","Produits retirés rangés et étiquetés en réserve"];
+const RAYONS = {
+  "Vêtements femme : retirer l'été, installer l'hiver":{
+    obj:"Retirer tous les vêtements et accessoires d'été du rayon femme et installer la collection d'hiver.",
+    c:["Retirez : robes légères, débardeurs, shorts, maillots, sandales, chapeaux de paille, lunettes de soleil…","Étiquetez le carton « SAISON ÉTÉ — FEMME » avec le nombre d'articles.","Installez : pulls, gilets, manteaux, écharpes, bonnets, gants, collants…","Rangez par famille puis par taille (du plus petit au plus grand), cintres dans le même sens.","Créez une tenue complète mise en avant (mannequin ou portant de tête) : pull + écharpe + bonnet.","Associez les couleurs : couleurs chaudes ensemble, couleurs neutres ensemble."],
+    ret:"Vêtements d'été retirés", imp:"Vêtements d'hiver implantés",
+    q:["Plus aucun vêtement d'été dans le rayon","Tailles rangées dans l'ordre","Cintres dans le même sens, vêtements boutonnés","Une tenue complète mise en avant","Accessoires d'hiver proches des vêtements (vente complémentaire)"]},
+  "Vêtements enfant : retirer l'été, installer l'hiver":{
+    obj:"Retirer tous les vêtements et accessoires d'été du rayon enfant et installer la collection d'hiver.",
+    c:["Retirez : tee-shirts légers, shorts, maillots, sandales, casquettes, chapeaux…","Étiquetez le carton « SAISON ÉTÉ — ENFANT » avec le nombre d'articles.","Installez : pulls, sweats, pyjamas de Noël, manteaux, bonnets, gants, chaussons…","Rangez par âge (2 ans, 4 ans, 6 ans…) puis fille / garçon / mixte si besoin.","Mettez en avant une idée cadeau (pyjama de Noël, ensemble bonnet + gants).","Rien de dangereux à hauteur d'enfant (épingles, cintres cassés)."],
+    ret:"Vêtements d'été retirés", imp:"Vêtements d'hiver implantés",
+    q:["Plus aucun vêtement d'été dans le rayon","Tailles / âges rangés dans l'ordre","Une idée cadeau mise en avant","Accessoires d'hiver regroupés","Aucun objet dangereux à hauteur d'enfant"]},
+  "Rayon vaisselle : réaménager pour les fêtes":{
+    obj:"Réaménager le rayon vaisselle pour donner envie de dresser une belle table de fêtes.",
+    c:["Retirez ou déplacez ce qui ne correspond pas au rayon (objets mal rangés, vaisselle d'été colorée de pique-nique…).","Regroupez par usage : assiettes, verres, couverts, plats de service, accessoires de table.","Mettez en scène une table de fête (assiette + verre + serviette + petite déco) au niveau des yeux.","Produits lourds (piles d'assiettes, plats) en bas, verres et objets fragiles hors de portée des enfants, jamais au bord.","Vérifiez que les lots sont complets ; retirez les pièces ébréchées.","Manipulez avec deux mains, une pièce à la fois."],
+    ret:"Produits retirés ou déplacés", imp:"Produits implantés / mis en scène",
+    q:["Une table de fête mise en scène","Familles regroupées par usage","Rien de fragile au bord des étagères","Aucune pièce ébréchée en rayon","Lots complets"]},
+  "Rayon décoration : réaménager pour les fêtes":{
+    obj:"Réaménager le rayon décoration pour Noël : un univers clair, chaleureux et facile à acheter.",
+    c:["Retirez ou déplacez la décoration qui ne correspond pas à la saison (déco d'été, de plage, d'automne…).","Créez 1 ou 2 univers couleur : rouge & doré, blanc & argent, nature & bois…","Regroupez par famille : boules, guirlandes, bougies, figurines, décoration de table.","Testez les guirlandes lumineuses de démonstration ; aucun câble qui traîne.","Fragiles (verre, céramique) hors de portée des enfants, jamais au bord.","Mettez en avant un produit « coup de cœur » avec une étiquette."],
+    ret:"Produits retirés ou déplacés", imp:"Produits de décoration implantés",
+    q:["Plus aucune déco hors saison","Univers couleur lisible","Familles regroupées","Guirlandes testées, câbles rangés","Un produit coup de cœur mis en avant"]}
+};
+function rayonFiche(){
+  const r=state.f.m3_rayon; const d=RAYONS[r]; const z=$("#m3-fiche");
+  if(!d){z.innerHTML=`<b>Choisissez le rayon attribué par le professeur</b> pour afficher votre mission précise.`;$("#m3-t-retires").textContent="Produits retirés du rayon";$("#m3-t-implantes").textContent="Produits implantés";$("#m3-qs-titre").textContent="";$("#m3-qualite-spe").innerHTML="";return;}
+  z.innerHTML=`<b>🎄 Votre mission : ${d.obj}</b><ul style="margin:6px 0 0;padding-left:18px">${d.c.map(x=>`<li>${x}</li>`).join("")}</ul>`;
+  $("#m3-t-retires").textContent=d.ret; $("#m3-t-implantes").textContent=d.imp;
+  $("#m3-qs-titre").textContent="Spécial « "+r.split(" :")[0]+" »";
+  const box=$("#m3-qualite-spe");
+  if(box.dataset.r!==r){box.dataset.r=r;box.innerHTML=d.q.map((q,i)=>`<label><input type="checkbox" data-k="m3_qs${i}"> ${q}</label>`).join("");
+}
+  box.querySelectorAll("[data-k]").forEach(el=>el.checked=!!state.f[el.dataset.k]);
+}
+const Q_M4 = ["Les bons articles, en bonne quantité","Étiquettes de prix retirées","Papier sans déchirure, angles nets","Scotch discret, bien fermé","Ruban / bolduc posé proprement","Étiquette nominative et carte jointes","Articles fragiles protégés","Poste d'emballage rangé"];
+
+/* ================= OUTILS ================= */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const eur = n => n.toFixed(2).replace(".",",")+" €";
+const num = v => { const x = parseFloat(String(v||"").replace(",",".").replace(/\s|€/g,"")); return isNaN(x)?null:x; };
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),2600);}
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ================= CONSTRUCTION ================= */
+function build(){
+  // M1
+  let tot=0;
+  $("#t-bc").innerHTML = BC.map(r=>{const m=r[2]*r[3];tot+=m;return `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]}</td><td class="num">${eur(r[3])}</td><td class="num">${eur(m)}</td></tr>`}).join("")
+    + `<tr><td colspan="4" class="num"><b>Total HT</b></td><td class="num">à calculer</td></tr>`;
+  $("#t-bl").innerHTML = BL.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]}</td><td>${r[3]}</td></tr>`).join("");
+  $("#colis-liste").innerHTML = COLIS.map(c=>`<li>${c}</li>`).join("");
+  const anom = ["","Conforme","Quantité manquante","Article abîmé","Erreur de référence","Reliquat","Article non commandé"];
+  const act = ["","Accepter","Réserve sur le BL","Retour fournisseur","Attendre le reliquat","Demander un avoir"];
+  const opt = a => a.map(x=>`<option>${x}</option>`).join("");
+  $("#t-ctrl").innerHTML = BC.map((r,i)=>{
+    const bl = BL.find(b=>b[0]===r[0]);
+    return `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="num">${r[2]}</td><td class="num">${bl?bl[2]:"0"}</td>
+    <td><input type="number" min="0" data-k="m1_c${i}" data-cmd="${r[2]}" class="ecart-src"></td>
+    <td class="calc" id="m1_ec${i}">—</td>
+    <td><select class="f" data-k="m1_a${i}">${opt(anom)}</select></td>
+    <td><select class="f" data-k="m1_ac${i}">${opt(act)}</select></td></tr>`}).join("");
+  $("#t-nc").innerHTML = [0,1].map(i=>`<tr><td><input type="text" data-k="m1_nc_ref${i}"></td><td><input type="text" data-k="m1_nc_des${i}"></td><td><input type="number" min="0" data-k="m1_nc_q${i}"></td><td><select class="f" data-k="m1_nc_ac${i}">${opt(act)}</select></td></tr>`).join("");
+  $("#m1-theme").innerHTML = `<option value="">— choisir —</option>` + Object.keys(THEMES).map(t=>`<option>${t}</option>`).join("");
+  const etats=["","Bon état","Abîmé","Incomplet","Périmé / date proche","À nettoyer"];
+  $("#t-inv").innerHTML = [...Array(12)].map((_,i)=>`<tr><td><input type="text" data-k="m1_iv_emp${i}" placeholder="R / Rés."></td><td><input type="text" data-k="m1_iv_ref${i}"></td><td><input type="text" data-k="m1_iv_des${i}"></td><td><input type="number" min="0" data-k="m1_iv_re${i}"></td><td><select class="f" data-k="m1_iv_et${i}">${opt(etats)}</select></td><td><input type="text" data-k="m1_iv_obs${i}"></td></tr>`).join("");
+
+  // M2
+  $("#t-cab").innerHTML = [1,2,3].map(i=>`<tr><td><b>${i}</b></td><td><textarea data-k="m2_c${i}" style="min-height:56px"></textarea></td><td><textarea data-k="m2_a${i}" style="min-height:56px"></textarea></td><td><textarea data-k="m2_b${i}" style="min-height:56px"></textarea></td></tr>`).join("");
+  $("#t-obj").innerHTML = [1,2].map(i=>`<tr><td><textarea data-k="m2_o${i}" style="min-height:50px"></textarea></td><td><textarea data-k="m2_r${i}" style="min-height:50px"></textarea></td></tr>`).join("");
+  $("#clients").innerHTML = CLIENTS.map((c,i)=>`<div class="client" id="cl${i}"><h4>Carte ${i+1} · ${c.n}</h4><div><b>Profil :</b> ${c.p}</div><div><b>Besoin :</b> ${c.b}</div><div><b>Budget :</b> ${c.bud}</div><div><b>Objection à placer :</b> ${c.obj}</div><div class="sec">🔒 <b>Info secrète</b> (à révéler seulement si le vendeur pose la bonne question) : ${c.s}</div></div>`).join("");
+  $("#t-grille tbody").innerHTML =
+    `<tr><td><b>Vendeur</b></td>${[1,2,3].map(p=>`<td><input type="text" data-k="m2_v${p}" placeholder="Prénom"></td>`).join("")}</tr>
+     <tr><td><b>Carte client n°</b></td>${[1,2,3].map(p=>`<td><select class="f" data-k="m2_cc${p}"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option></select></td>`).join("")}</tr>`
+    + GRILLE.map((g,i)=>`<tr><td>${g}</td>${[1,2,3].map(p=>`<td style="text-align:center"><input type="checkbox" data-k="m2_g${p}_${i}" style="width:18px;height:18px;accent-color:#0f3d2e"></td>`).join("")}</tr>`).join("")
+    + `<tr><td><b>Total des étapes réussies</b></td>${[1,2,3].map(p=>`<td class="calc" id="m2_tot${p}">0 / ${GRILLE.length}</td>`).join("")}</tr>`;
+  $("#debrief").innerHTML = [1,2,3].map(p=>`<div class="champ"><label>Passage ${p} : points forts / à améliorer</label><textarea data-k="m2_deb${p}"></textarea></div>`).join("")
+    + `<div class="champ"><label>Ce que l'équipe retient pour la prochaine vente</label><textarea data-k="m2_retient"></textarea></div>`;
+
+  // M4 lignes de commande + préparation
+  $("#t-lignes").innerHTML = [...Array(6)].map((_,i)=>`<tr><td><b>${i+1}</b></td><td><input type="text" data-k="m4_ld${i}"></td><td><input type="number" min="0" data-k="m4_lq${i}"></td><td><input type="text" inputmode="decimal" data-k="m4_lp${i}"></td></tr>`).join("");
+  $("#t-prep").innerHTML = [...Array(6)].map((_,i)=>`<tr id="m4_prow${i}"><td id="m4_pdes${i}"></td><td class="num" id="m4_pqte${i}"></td><td><input type="number" min="0" data-k="m4_pq${i}"></td><td><input type="text" data-k="m4_pe${i}"></td><td style="text-align:center"><input type="checkbox" data-k="m4_pok${i}"></td><td style="text-align:center"><input type="checkbox" data-k="m4_ppx${i}"></td><td><input type="text" data-k="m4_pobs${i}"></td></tr>`).join("");
+
+  // M3
+  m3Rows();
+  $("#m3-rayon").innerHTML = `<option value="">— choisir —</option>` + Object.keys(RAYONS).map(r=>`<option>${r}</option>`).join("");
+  $("#m3-qualite").innerHTML = Q_M3.map((q,i)=>`<label><input type="checkbox" data-k="m3_qc${i}"> ${q}</label>`).join("");
+  $("#m4-qualite").innerHTML = Q_M4.map((q,i)=>`<label><input type="checkbox" data-k="m4_qc${i}"> ${q}</label>`).join("");
+
+  // Rendu
+  $$(".rendu").forEach(r=>{const m=r.dataset.m;
+    r.innerHTML = `<div><div class="lbl" style="margin:0">Auto-évaluation de l'équipe</div>
+      <div class="smileys">${["😕 Difficile","🙂 Ça va","😀 Réussi"].map(s=>`<label><input type="radio" name="ae${m}" data-k="m${m}_ae" value="${s}"> ${s}</label>`).join("")}</div></div>
+      <div style="margin-left:auto;text-align:right"><div class="statut" id="statut${m}"></div>
+      <button class="btn rouge" data-rendre="${m}">🎁 Rendre la mission</button></div>`;
+  });
+
+  // Photos
+  $$(".photo").forEach(p=>{const k=p.dataset.photo; const t=p.dataset.titre||"Photo du produit";
+    p.innerHTML = `<div class="lbl">${t}</div><div class="img-zone"><div class="vide">Aucune photo (sans visage !)</div></div>
+      <label class="btn sec petit no-print" style="display:inline-block">📷 Prendre / choisir une photo<input type="file" accept="image/*" capture="environment" hidden data-ph="${k}"></label>
+      <button class="btn sec petit no-print" data-phdel="${k}">Supprimer</button>`;
+  });
+
+  // Planning
+  ["A","B"].forEach(g=>{
+    let h=`<thead><tr><th>Équipe</th><th>Séance 1<br>créneau 1</th><th>Séance 1<br>créneau 2</th><th>Séance 2<br>créneau 1</th><th>Séance 2<br>créneau 2</th></tr></thead><tbody>`;
+    for(let e=1;e<=4;e++){h+=`<tr><td><b>Équipe ${e}</b></td>`;
+      for(let s=0;s<2;s++)for(let c=0;c<2;c++){const m=ROT[g][s][c][e-1];h+=`<td class="m${m}"><b>M${m}</b><br><span style="font-size:.75rem">${MISSIONS[m].t}</span></td>`}
+      h+="</tr>";}
+    $("#plan-"+g).innerHTML=h+"</tbody>";
+  });
+  $("#t-corrige").innerHTML = CORRIGE.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join("");
+}
+
+function buildCommande(){
+  const e = state.id.e; const c = COMMANDES[e];
+  $("#m4-commande").innerHTML = `<div class="dhead"><div><div class="dtitre">COMMANDE CLICK & COLLECT</div>N° ${c.num} · Équipe ${e}</div><div><b>Client :</b> ${c.client}<br><b>Tél. :</b> ${c.tel}<br><b>Retrait :</b> ${c.retrait}</div></div>
+    <div><b>Articles :</b> donnés par le professeur (à recopier ci-dessous)<br><b>Service demandé :</b> ${c.service} (offert)<br><b>Carte :</b> ${c.carte}</div>`;
+}
+
+/* ================= ÉTAT & SAUVEGARDE ================= */
+const KEY = "lbshop-noel-1mcva";
+let state = {v:1, id:{g:"A",e:"1"}, f:{}, p:{}, st:{}, t:null};
+const sKey = () => `${KEY}:${state.id.g}${state.id.e}`;
+let saveTimer=null;
+function save(){
+  state.t = Date.now();
+  try{
+    localStorage.setItem(sKey(), JSON.stringify(state));
+    localStorage.setItem(KEY+":last", state.id.g+state.id.e);
+    setSaveMsg(`✓ Enregistré sur cet appareil à ${new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})} — pensez à télécharger la sauvegarde en fin de séance.`);
+  }catch(e){
+    setSaveMsg("⚠ Enregistrement automatique impossible sur cet appareil : téléchargez votre sauvegarde régulièrement !", true);
+  }
+}
+function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(save,500);}
+function setSaveMsg(t,err){const e=$("#etat-save");e.textContent=t;e.classList.toggle("err",!!err);}
+function loadKey(k){try{const s=localStorage.getItem(k);return s?JSON.parse(s):null}catch(e){return null}}
+
+function collect(el){
+  const k=el.dataset.k; if(!k) return;
+  if(el.type==="checkbox") state.f[k]=el.checked;
+  else if(el.type==="radio"){ if(el.checked) state.f[k]=el.value; }
+  else state.f[k]=el.value;
+}
+const NIV = ["","Niveau tête (visibilité)","Niveau yeux (achat)","Niveau mains (prise facile)","Niveau sol (lourd, volumineux)"];
+function m3Rows(){
+  const nr=Math.max(6,+state.f.m3_nret||0), ni=Math.max(8,+state.f.m3_nimp||0);
+  const o=NIV.map(x=>`<option>${x}</option>`).join("");
+  $("#t-retires").innerHTML = [...Array(nr)].map((_,i)=>`<tr><td><input type="text" data-k="m3_rd${i}"></td><td><input type="number" min="0" data-k="m3_rq${i}"></td><td><input type="text" data-k="m3_rr${i}"></td></tr>`).join("");
+  $("#t-implantes").innerHTML = [...Array(ni)].map((_,i)=>`<tr><td><input type="text" data-k="m3_id${i}"></td><td><input type="text" data-k="m3_ip${i}" style="width:80px"></td><td><select class="f" data-k="m3_in${i}">${o}</select></td><td><input type="text" data-k="m3_ij${i}"></td></tr>`).join("");
+}
+function applyState(){
+  m3Rows();
+  $("#id-g").value=state.id.g; $("#id-e").value=state.id.e;
+  buildCommande();
+  $$("[data-k]").forEach(el=>{const v=state.f[el.dataset.k];
+    if(el.type==="checkbox") el.checked=!!v;
+    else if(el.type==="radio") el.checked=(v===el.value);
+    else el.value = v??"";
+  });
+  $$(".photo").forEach(renderPhoto);
+  refresh();
+}
+function refresh(){
+  // écarts M1
+  $$(".ecart-src").forEach(el=>{const i=el.dataset.k.replace("m1_c","");const c=$("#m1_ec"+i);const v=num(el.value);
+    if(v===null){c.textContent="—";c.className="calc";return;}
+    const d=v-(+el.dataset.cmd);c.textContent=(d>0?"+":"")+d;c.className="calc "+(d<0?"neg":d>0?"pos":"zero");});
+  themeFiche(); rayonFiche();
+  for(let i=0;i<6;i++){const d=state.f["m4_ld"+i]||"";$("#m4_pdes"+i).textContent=d||"—";$("#m4_pqte"+i).textContent=state.f["m4_lq"+i]||"";$("#m4_prow"+i).style.display=(d||i<2)?"":"none";}
+  // grille M2
+  [1,2,3].forEach(p=>{let n=0;GRILLE.forEach((_,i)=>{if(state.f[`m2_g${p}_${i}`])n++});$("#m2_tot"+p).textContent=`${n} / ${GRILLE.length}`;});
+  // SMS
+  $("#sms-cpt").textContent=`${(state.f.m4_sms||"").length} / 160`;
+  // statuts
+  let rendues=0;
+  for(let m=1;m<=4;m++){
+    const s=statut(m); if(s==="rendue")rendues++;
+    const b=$("#boule"+m); b.setAttribute("fill", s==="rendue"?"#b3262e":s==="cours"?"#d4a63a":"#cfc8b8"); b.classList.toggle("on",s==="rendue");
+    const st=$("#statut"+m); const btn=$(`[data-rendre="${m}"]`);
+    if(s==="rendue"){st.innerHTML=`<span style="color:var(--rouge)">✓ Mission rendue</span>`;btn.textContent="Annuler le rendu";btn.className="btn sec";}
+    else{st.textContent=s==="cours"?"En cours":"À faire";btn.textContent="🎁 Rendre la mission";btn.className="btn rouge";}
+  }
+  $("#etoile").setAttribute("fill", rendues===4?"#ffe39a":"#bdb6a6"); $("#etoile").classList.toggle("on",rendues===4);
+  $("#cpt").textContent=rendues;
+  $("#sapin-equipe").textContent=`Groupe ${state.id.g} · Équipe ${state.id.e}`;
+  // parcours
+  const g=state.id.g,e=+state.id.e; const ordre=[];
+  for(let s=0;s<2;s++)for(let c=0;c<2;c++)ordre.push({s:s+1,c:c+1,m:ROT[g][s][c][e-1]});
+  $("#parcours").innerHTML = ordre.map(o=>`Séance ${o.s} : <b>M${o.m}</b>`).join(" → ");
+  $("#sapin-liste").innerHTML = ordre.map(o=>{const s=statut(o.m);return `<li>M${o.m} · ${MISSIONS[o.m].t} <span class="pastille ${s==="rendue"?"r":s==="cours"?"o":""}">${s==="rendue"?"Rendue":s==="cours"?"En cours":"À faire"}</span><br><span class="petit-txt">Séance ${o.s}, créneau ${o.c}</span></li>`}).join("");
+  $("#mcards").innerHTML = ordre.map(o=>{const s=statut(o.m);return `<button class="mcard ${cur===o.m?"on":""}" data-open="${o.m}"><div class="num">M${o.m}</div><div class="t">${MISSIONS[o.m].t}</div><div class="s petit-txt">Séance ${o.s} · créneau ${o.c}<br><span class="pastille ${s==="rendue"?"r":s==="cours"?"o":""}">${s==="rendue"?"Rendue":s==="cours"?"En cours":"À faire"}</span></div></button>`}).join("");
+}
+function statut(m){
+  if(state.st[m]) return "rendue";
+  const touched = Object.keys(state.f).some(k=>k.startsWith("m"+m+"_") && state.f[k]!=="" && state.f[k]!==false) || Object.keys(state.p).some(k=>k.startsWith("m"+m+"_"));
+  return touched?"cours":"afaire";
+}
+
+/* ================= PHOTOS ================= */
+function renderPhoto(p){const k=p.dataset.photo;const z=$(".img-zone",p);
+  z.innerHTML = state.p[k]?`<img src="${state.p[k]}" alt="">`:`<div class="vide">Aucune photo (sans visage !)</div>`;}
+function compress(file){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{
+  const max=900;let w=img.width,h=img.height;if(w>max||h>max){const r=Math.min(max/w,max/h);w=Math.round(w*r);h=Math.round(h*r);}
+  const cv=document.createElement("canvas");cv.width=w;cv.height=h;cv.getContext("2d").drawImage(img,0,0,w,h);res(cv.toDataURL("image/jpeg",0.65));};
+  img.onerror=rej;img.src=fr.result;};fr.onerror=rej;fr.readAsDataURL(file);});}
+
+/* ================= NAVIGATION ================= */
+let cur=null;
+function openMission(m){cur=m;$$(".mission").forEach(x=>x.classList.toggle("on",x.id==="m"+m));refresh();}
+function showView(v){$$("nav.tabs button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));$$(".vue").forEach(x=>x.classList.toggle("on",x.id==="v-"+v));window.scrollTo({top:0});}
+
+/* ================= RAPPORT (impression) ================= */
+function buildReport(){
+  const noms=[state.f.nom1,state.f.nom2,state.f.nom3].filter(Boolean).join(", ")||"—";
+  let h=`<h1 style="font-family:Fraunces,serif">Opération Noël au LB Shop — compte rendu</h1>
+    <p><b>Groupe ${state.id.g} · Équipe ${state.id.e}</b> · Élèves : ${esc(noms)} · Imprimé le ${new Date().toLocaleString("fr-FR")}</p>`;
+  for(let m=1;m<=4;m++){
+    const src=$("#m"+m).cloneNode(true);
+    src.querySelectorAll(".no-print,.rendu button,label.btn,button,.couronne").forEach(x=>x.remove());
+    src.querySelectorAll("input,textarea,select").forEach(el=>{
+      const k=el.dataset.k; const v=k?state.f[k]:"";
+      let span=document.createElement("span");
+      if(el.type==="checkbox"){span.textContent=v?"☑":"☐";}
+      else if(el.type==="radio"){ if(v===el.value){span.textContent="◉";} else span.textContent="○"; }
+      else if(el.tagName==="TEXTAREA"){span.className="bloc";span.textContent=v||"";}
+      else{span.className="val";span.textContent=v||"";}
+      el.replaceWith(span);
+    });
+    src.querySelectorAll(".mhead").forEach(x=>{x.style.background="#fff";x.style.color="#000";x.style.border="2px solid #0f3d2e";x.querySelectorAll("h2").forEach(h=>h.style.color="#0f3d2e")});
+    h+=`<div class="rp-mission"><p><b>Statut : ${state.st[m]?"Rendue":"Non rendue"}</b></p>${src.innerHTML}</div>`;
+  }
+  $("#rapport").innerHTML=h;
+}
+
+/* ================= ÉVÉNEMENTS ================= */
+document.addEventListener("input",e=>{const el=e.target;if(el.dataset&&el.dataset.k){collect(el);refresh();saveSoon();}});
+document.addEventListener("change",async e=>{const el=e.target;
+  if(el.dataset&&el.dataset.k){collect(el);refresh();saveSoon();}
+  if(el.dataset&&el.dataset.ph&&el.files[0]){try{state.p[el.dataset.ph]=await compress(el.files[0]);renderPhoto(el.closest(".photo"));refresh();save();toast("Photo ajoutée");}catch(err){toast("Photo illisible, réessayez");}el.value="";}
+});
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,[data-open]"); if(!t) return;
+  if(t.dataset.v){showView(t.dataset.v);}
+  if(t.dataset.open){openMission(+t.dataset.open);}
+  if(t.dataset.rendre){const m=+t.dataset.rendre;state.st[m]=!state.st[m];if(state.st[m])toast(`Mission ${m} rendue : une boule s'allume sur le sapin 🎄`);refresh();save();}
+  if(t.dataset.addrow){const k=t.dataset.addrow==="ret"?"m3_nret":"m3_nimp";const base=t.dataset.addrow==="ret"?6:8;
+    state.f[k]=Math.max(base,+state.f[k]||0)+1;
+    const tb=$(t.dataset.addrow==="ret"?"#t-retires":"#t-implantes");const vals={};tb.querySelectorAll("[data-k]").forEach(el=>vals[el.dataset.k]=el.value);
+    m3Rows();$$("#t-retires [data-k],#t-implantes [data-k]").forEach(el=>{const v=state.f[el.dataset.k];if(v!==undefined)el.value=v;});
+    const last=$(t.dataset.addrow==="ret"?"#t-retires":"#t-implantes").lastElementChild.querySelector("input");last&&last.focus();save();}
+  if(t.dataset.phdel){delete state.p[t.dataset.phdel];renderPhoto(t.closest(".photo"));refresh();save();}
+});
+function changeId(){
+  save();
+  const g=$("#id-g").value,e=$("#id-e").value;
+  const k=`${KEY}:${g}${e}`; const s=loadKey(k);
+  if(s){state=s;toast(`Travail du groupe ${g}, équipe ${e} retrouvé`);}
+  else{state={v:1,id:{g,e},f:{},p:{},st:{},t:null};toast(`Groupe ${g}, équipe ${e} : nouvelle fiche`);}
+  state.id={g,e};
+  applyState(); if(cur) openMission(cur); save();
+}
+$("#id-g").addEventListener("change",changeId);
+$("#id-e").addEventListener("change",changeId);
+
+$("#b-dl").addEventListener("click",()=>{
+  save();
+  const blob=new Blob([JSON.stringify(state)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`LBShop-Noel_${state.id.g}-E${state.id.e}.json`;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  toast("Sauvegarde téléchargée : déposez-la dans le dossier de classe");
+});
+$("#b-ul").addEventListener("click",()=>$("#f-ul").click());
+$("#f-ul").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const fr=new FileReader();
+  fr.onload=()=>{try{const s=JSON.parse(fr.result);if(!s.id||!s.f)throw 0;state=s;state.p=state.p||{};state.st=state.st||{};applyState();if(cur)openMission(cur);save();toast(`Sauvegarde reprise : groupe ${s.id.g}, équipe ${s.id.e}`);}catch(err){toast("Ce fichier n'est pas une sauvegarde du LB Shop");}};
+  fr.readAsText(f);e.target.value="";});
+$("#b-pr").addEventListener("click",()=>{buildReport();try{window.print();}catch(e){toast("Impression bloquée ici : ouvrez la page dans un navigateur");}});
+window.addEventListener("beforeprint",buildReport);
+
+$("#b-tirer").addEventListener("click",()=>{const i=Math.floor(Math.random()*CLIENTS.length);$$(".client").forEach((c,j)=>c.classList.toggle("tiree",i===j));$("#cl"+i).scrollIntoView({behavior:"smooth",block:"center"});toast(`Carte ${i+1} tirée`);});
+$("#b-m1-verif").addEventListener("click",()=>{const ht=num(state.f.m1_ht),tva=num(state.f.m1_tva),ttc=num(state.f.m1_ttc);const ok=(a,b)=>a!==null&&Math.abs(a-b)<0.011;
+  const r=[ok(ht,418.60)?"HT ✓":"HT ✗",ok(tva,83.72)?"TVA ✓":"TVA ✗",ok(ttc,502.32)?"TTC ✓":"TTC ✗"];$("#m1-verif-res").textContent=r.join(" · ");});
+$("#b-m4-verif").addEventListener("click",()=>{const v=num(state.f.m4_total);let c=0,n=0;for(let i=0;i<6;i++){const q=num(state.f["m4_lq"+i]),pu=num(state.f["m4_lp"+i]);if(q!==null&&pu!==null){c+=q*pu;n++;}}
+  $("#m4-verif-res").textContent=n===0?"Remplissez d'abord les articles (quantité et prix)":v===null?"Saisissez un montant":Math.abs(v-c)<0.011?"✓ Montant exact":"✗ Recalculez (quantité × prix unitaire, puis additionnez)";});
+
+/* ================= DÉCOR ================= */
+function couronneSVG(){
+  let s=`<defs><radialGradient id="gb" cx=".35" cy=".3"><stop offset="0" stop-color="#ff7b84"/><stop offset="1" stop-color="#a01b27"/></radialGradient></defs>`;
+  const verts=["#0f4a36","#176b47","#1f8656","#2a9a64"];
+  for(let r=0;r<3;r++){const R=38+r*0;for(let i=0;i<26;i++){const a=(i/26)*Math.PI*2+r*0.12;const rr=34+r*5;const x=60+Math.cos(a)*rr,y=60+Math.sin(a)*rr;const rot=a*180/Math.PI+90+(r-1)*30;
+    s+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="5.5" ry="11" fill="${verts[(i+r)%4]}" transform="rotate(${rot.toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`;}}
+  for(let i=0;i<9;i++){const a=(i/9)*Math.PI*2+0.3;const x=60+Math.cos(a)*39,y=60+Math.sin(a)*39;
+    s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="url(#gb)"/><circle cx="${(x-1.2).toFixed(1)}" cy="${(y-1.3).toFixed(1)}" r="1.1" fill="#fff" opacity=".8"/>`;}
+  for(let i=0;i<12;i++){const a=(i/12)*Math.PI*2+0.1;const x=60+Math.cos(a)*44,y=60+Math.sin(a)*44;
+    s+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2" fill="#ffe39a" class="lum-sapin" style="animation-delay:${(i%4)*.35}s"/>`;}
+  s+=`<g transform="translate(60 100)"><path d="M0 0 C-14 -14 -28 -6 -22 4 C-16 12 -6 4 0 0Z" fill="#c22a35" stroke="#7a0f18" stroke-width="1"/><path d="M0 0 C14 -14 28 -6 22 4 C16 12 6 4 0 0Z" fill="#c22a35" stroke="#7a0f18" stroke-width="1"/>
+      <path d="M-2 2 L-10 20 L-4 17 L-2 22 L2 4Z M2 2 L10 20 L4 17 L2 22 L-2 4Z" fill="#a01b27"/><circle r="4.5" fill="#d9b04c" stroke="#a8812a"/></g>`;
+  return s;
+}
+function guirlandes(){
+  const cols=["#ff4b55","#ffd25a","#4fd18b","#5aa8ff","#ff8a3d","#ff4b55","#ffd25a"];
+  $$(".guirlande").forEach(g=>{
+    g.querySelectorAll(".ampoule").forEach(a=>a.remove());
+    const n=Math.ceil(g.clientWidth/80)+1;
+    for(let i=0;i<n;i++){const b=document.createElement("span");b.className="ampoule";b.style.left=(i*80+34.5)+"px";b.style.setProperty("--c",cols[i%cols.length]);b.style.animationDelay=((i*0.37)%1.6).toFixed(2)+"s";g.appendChild(b);}
+  });
+}
+function neige(){
+  const z=$("#neige-zone");const sym=["❄","❅","❆","•","•"];let h="";
+  for(let i=0;i<46;i++){const sz=6+Math.random()*12;h+=`<span class="flocon" style="left:${(Math.random()*100).toFixed(1)}%;font-size:${sz.toFixed(0)}px;animation-duration:${(7+Math.random()*9).toFixed(1)}s;animation-delay:-${(Math.random()*14).toFixed(1)}s;opacity:${(.45+Math.random()*.5).toFixed(2)}">${sym[i%sym.length]}</span>`;}
+  z.innerHTML=h;
+}
+function decor(){
+  const c=couronneSVG();
+  $$(".couronne-svg").forEach(s=>s.innerHTML=c);
+  $$(".mhead").forEach(m=>{const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("viewBox","0 0 120 120");s.setAttribute("class","couronne");s.innerHTML=c;m.appendChild(s);});
+  guirlandes(); neige();
+  let t;window.addEventListener("resize",()=>{clearTimeout(t);t=setTimeout(guirlandes,200)});
+}
+
+/* ================= DÉMARRAGE ================= */
+build();
+decor();
+(function init(){
+  let last=null;try{last=localStorage.getItem(KEY+":last")}catch(e){}
+  if(last){const s=loadKey(`${KEY}:${last}`);if(s)state=s;}
+  state.p=state.p||{};state.st=state.st||{};
+  applyState();
+  const ordre=ROT[state.id.g][0][0][state.id.e-1]; openMission(ordre);
+  if(state.t)setSaveMsg(`✓ Travail retrouvé (dernier enregistrement : ${new Date(state.t).toLocaleString("fr-FR",{weekday:"short",hour:"2-digit",minute:"2-digit"})}).`);
+})();
+</script>
+</body>
+</html>
